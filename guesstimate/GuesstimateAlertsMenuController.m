@@ -26,40 +26,18 @@
 
 @implementation GuesstimateAlertsMenuController
 
-static BOOL gamesLoaded = NO;
-static BOOL invitesLoaded = NO;
-
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
+        // Create static sections of table view
+        [self createMenuWithNumSections:3];
+        [self addMenuItems:@[] header:@"Invites" inSection:0];
+        [self addMenuItems:@[] header:@"My Games" inSection:1];
+        [self addMenuItems:@[@"Logout"] header:@"Settings" inSection:2];
         
-    }
-    return self;
-}
-
--(void)viewDidDisappear:(BOOL)animated {
-    [self.menuTable removeFromSuperview];
-}
-
--(void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    
-    [GuesstimateApplication displayWaiting:self.view];
-    
-    // Create static sections of table view
-    [self createMenuWithNumSections:3];
-    [self addMenuItems:@[] header:@"Invites" inSection:0];
-    [self addMenuItems:@[] header:@"My Games" inSection:1];
-    [self addMenuItems:@[@"Logout"] header:@"Settings" inSection:2];
-    
-    void ( ^completeBlock )( void );
-    completeBlock = ^( void )
-    {
-        [GuesstimateApplication hideWaiting:self.view];
-        
-        NSInteger tableHeight = [self getHeight:44 rowHeight:44];
+        //NSInteger tableHeight = [self getHeight:44 rowHeight:44];
+        NSInteger tableHeight = [UIScreen mainScreen].bounds.size.height;
         NSInteger maxHeight = [UIScreen mainScreen].bounds.size.height - 20;
         tableHeight = MIN(tableHeight, maxHeight);
         
@@ -70,23 +48,40 @@ static BOOL invitesLoaded = NO;
         self.menuTable.separatorStyle = UITableViewCellSeparatorStyleNone;
         self.menuTable.backgroundColor = [UIColor clearColor];
         
-        if(tableHeight > maxHeight) {
-            self.menuTable.scrollEnabled = YES;
-            self.menuTable.bounces = YES;
-        } else {
-            self.menuTable.scrollEnabled = NO;
-            self.menuTable.bounces = NO;
-        }
-        
+        self.menuTable.scrollEnabled = YES;
+        self.menuTable.bounces = YES;
+
         
         [self.view addSubview:self.menuTable];
+
+    }
+    return self;
+}
+
+-(void)viewDidDisappear:(BOOL)animated {
+    //[self.menuTable removeFromSuperview];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    BOOL __block gamesLoaded = NO;
+    BOOL __block invitesLoaded = NO;
+    
+    [super viewWillAppear:animated];
+    [GuesstimateApplication displayWaiting:self.view withText:@"Loading games..."];
+    
+    void ( ^completeBlock )( void );
+    completeBlock = ^(void) {
+        [GuesstimateApplication hideWaiting:self.view];
+        [self.menuTable reloadData];
+        [self.menuTable setNeedsDisplay];
     };
     
     [GuesstimateGame getMyGames:^(NSArray *games, NSError *error) {
         if(games && games.count > 0) {
             [self addMenuItems:games header:@"My Games" inSection:1];
         } else {
-            
+            [self addMenuItems:@[] header:@"My Games" inSection:1];
             //[[GuesstimateApplication getErrorAlert:[error userInfo][@"error"]] show];
         }
         
@@ -100,7 +95,7 @@ static BOOL invitesLoaded = NO;
         if(invites && invites.count > 0) {
             [self addMenuItems:invites header:@"Invites" inSection:0];
         } else {
-            
+            [self addMenuItems:@[] header:@"Invites" inSection:0];
         }
         
         invitesLoaded = YES;
@@ -108,12 +103,13 @@ static BOOL invitesLoaded = NO;
             completeBlock();
         }
     }];
+
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
 }
 
 #pragma mark custom cell handlers
@@ -127,7 +123,7 @@ static BOOL invitesLoaded = NO;
 }
 
 -(void)startLogOut {
-    [GuesstimateApplication displayWaiting:self.view];
+    [GuesstimateApplication displayWaiting:self.view withText:@"Logging out..."];
     [GuesstimateUser logOutAuthUser];
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideRight animated:NO completion:^(BOOL finished) {
         [GuesstimateApplication hideWaiting:self.view];
@@ -138,7 +134,7 @@ static BOOL invitesLoaded = NO;
 }
 
 -(void)loadGame:(NSIndexPath *)indexPath {
-    [GuesstimateApplication displayWaiting:self.view];
+    [GuesstimateApplication displayWaiting:self.view withText:@"Loading game..."];
     GuesstimateGame *game = [self getGameCell:indexPath];
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideRight animated:NO completion:^(BOOL finished) {
         [GuesstimateApplication hideWaiting:self.view];
@@ -162,7 +158,7 @@ static BOOL invitesLoaded = NO;
 }
 
 -(void)loadGameFromInvite:(NSIndexPath *)indexPath {
-    [GuesstimateApplication displayWaiting:self.view];
+    [GuesstimateApplication displayWaiting:self.view withText:@"Accepting invite..."];
     GuesstimateInvite *invite = [self getInviteCell:indexPath];
     GuesstimateGame *game = invite.game;
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideRight animated:NO completion:^(BOOL finished) {

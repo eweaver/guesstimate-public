@@ -81,6 +81,7 @@
 		5AE113BF1925D18C00C65FE8 /* btn_arrowright.png in Resources */ = {isa = PBXBuildFile; fileRef = 5AE113B51925D18C00C65FE8 /* btn_arrowright.png */; };
 		5AE113C01925D18C00C65FE8 /* btn_arrowright@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5AE113B61925D18C00C65FE8 /* btn_arrowright@2x.png */; };
 		5AEB504D1914B034002C999D /* GuesstimateTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AEB504C1914B034002C999D /* GuesstimateTransitionAnimator.m */; };
+		5AECA97D197607CD008E0B61 /* GuesstimateTicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AECA97C197607CD008E0B61 /* GuesstimateTicker.m */; };
 		5AF0B4D21925E0640004E971 /* cat_movies.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5AF0B4D01925E0640004E971 /* cat_movies.jpg */; };
 		5AF0B4D31925E0640004E971 /* cat_movies@2x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5AF0B4D11925E0640004E971 /* cat_movies@2x.jpg */; };
 		5AF0B4DE1925E59D0004E971 /* cat_geography.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5AF0B4D41925E59D0004E971 /* cat_geography.jpg */; };
@@ -254,6 +255,8 @@
 		5AE113B61925D18C00C65FE8 /* btn_arrowright@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "btn_arrowright@2x.png"; path = "../../../Downloads/Main Screen Assets/btn_arrowright@2x.png"; sourceTree = "<group>"; };
 		5AEB504B1914B034002C999D /* GuesstimateTransitionAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuesstimateTransitionAnimator.h; sourceTree = "<group>"; };
 		5AEB504C1914B034002C999D /* GuesstimateTransitionAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuesstimateTransitionAnimator.m; sourceTree = "<group>"; };
+		5AECA97B197607CD008E0B61 /* GuesstimateTicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuesstimateTicker.h; sourceTree = "<group>"; };
+		5AECA97C197607CD008E0B61 /* GuesstimateTicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuesstimateTicker.m; sourceTree = "<group>"; };
 		5AF0B4D01925E0640004E971 /* cat_movies.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = cat_movies.jpg; path = "../../../Downloads/Main Screen Assets/cat_movies.jpg"; sourceTree = "<group>"; };
 		5AF0B4D11925E0640004E971 /* cat_movies@2x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "cat_movies@2x.jpg"; path = "../../../Downloads/Main Screen Assets/cat_movies@2x.jpg"; sourceTree = "<group>"; };
 		5AF0B4D41925E59D0004E971 /* cat_geography.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = cat_geography.jpg; path = "../../../Downloads/Main Screen Assets/cat_geography.jpg"; sourceTree = "<group>"; };
@@ -452,6 +455,8 @@
 				5A0179F21932DF1A00F519E5 /* GuesstimatePushNotifications.m */,
 				5A0179F41932FA7800F519E5 /* GuesstimatePushHandler.h */,
 				5A0179F51932FA7800F519E5 /* GuesstimatePushHandler.m */,
+				5AECA97B197607CD008E0B61 /* GuesstimateTicker.h */,
+				5AECA97C197607CD008E0B61 /* GuesstimateTicker.m */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -739,6 +744,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "First Step Dev";
 				TargetAttributes = {
+					5AB9C6581905E13D008D050A = {
+						DevelopmentTeam = HH52NVB3P3;
+					};
 					5AB9C6781905E13E008D050A = {
 						TestTargetID = 5AB9C6581905E13D008D050A;
 					};
@@ -897,6 +905,7 @@
 				5A00099B1915F09F00BA2B01 /* GuesstimatePlayGameViewController.m in Sources */,
 				5AB9C66F1905E13E008D050A /* FSPSAppDelegate.m in Sources */,
 				5A34462F1924736B004F1DD3 /* GuesstimateFacebookLibrary.m in Sources */,
+				5AECA97D197607CD008E0B61 /* GuesstimateTicker.m in Sources */,
 				5AF0B56A192B11390004E971 /* GuesstimatePhoneContacts.m in Sources */,
 				5AF0B51E192800E30004E971 /* GuesstimateQuestionSelectViewController.m in Sources */,
 				5AEB504D1914B034002C999D /* GuesstimateTransitionAnimator.m in Sources */,
@@ -1046,8 +1055,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/areimus/Documents/FacebookSDK,
@@ -1058,7 +1067,7 @@
 				INFOPLIST_FILE = "guesstimate/guesstimate-Info.plist";
 				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "18B86AAA-5ECE-4EB3-B4DD-E84696A45AB2";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1069,8 +1078,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/areimus/Documents/FacebookSDK,
@@ -1080,7 +1089,7 @@
 				GCC_PREFIX_HEADER = "guesstimate/guesstimate-Prefix.pch";
 				INFOPLIST_FILE = "guesstimate/guesstimate-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "1678F83C-E444-4BBE-8287-54E9A44E74E8";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

@@ -130,9 +130,9 @@
     NSString* name = self.nameText.text;
     NSString* password = self.passwordText.text;
     
-    [self displayWaiting];
+    [GuesstimateApplication displayWaiting:self.view withText:@"Registering..."];
     [GuesstimateUser registerWithName:name withEmail:identifier withPassword:password onCompletionBlock:^(GuesstimateUser *user, NSError *error) {
-        [self hideWaiting];
+        [GuesstimateApplication hideWaiting:self.view];
         
         if(error == nil) {
             GuesstimateQuestionSelectViewController *viewController = [[GuesstimateQuestionSelectViewController alloc] init];
@@ -192,7 +192,7 @@
 #pragma Facebook
 
 - (void)loginButtonTouchHandler:(UITapGestureRecognizer *)gr {
-    [self displayWaiting];
+    [GuesstimateApplication displayWaiting:self.view withText:@"" withSubtext:@"Logging in with Facebook..."];
     
     // TODO: Move to GuesstimateFacebookLibrary
     [PFFacebookUtils initializeFacebook];
@@ -202,7 +202,7 @@
     
     // Login PFUser using Facebook
     [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
-        [self hideWaiting];
+        [GuesstimateApplication hideWaiting:self.view];
         
         if (!user) {
             if (!error) {
@@ -211,7 +211,7 @@
                 [[GuesstimateApplication getErrorAlert:@"FBError"] show];
             }
         } else {
-            GuesstimateUser *authUser = [GuesstimateUser initAuthUser:user];
+            //GuesstimateUser *authUser = [GuesstimateUser initAuthUser:user];
             
             if(user.isNew) {
                 [GuesstimateFacebookLibrary meWithBlock:^(NSDictionary *userData, NSError *error) {

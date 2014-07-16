@@ -12,10 +12,13 @@
 @interface GuesstimatePushNotifications : NSObject
 
 +(void)saveDeviceToken:(NSData *)deviceToken;
++(void)syncDeviceTokenFromUserDefaults:(void (^)(BOOL succeeded, NSError *error))onComplete;
 +(void)setInstallationToCurrentUser:(NSString *)userId;
 +(void)joinPushChannel:(NSString *)channelName withUsers:(NSArray *)userIds onCompleteBlock:(void (^)(BOOL succeeded, NSError *error))onComplete;
 +(void)leavePushChannel:(NSString *)channelName withUsers:(NSArray *)userIds onCompleteBlock:(void (^)(BOOL succeeded, NSError *error))onComplete;
 
 +(void)sendPushToChannel:(NSString *)channelName type:(NSString *)type message:(NSString *)message pushData:(NSDictionary *)pushData expiresAt:(NSDate *)expiresAt;
+
++(void)sendPushToUsers:(NSArray *)users type:(NSString *)type message:(NSString *)message pushData:(NSDictionary *)pushData expiresAt:(NSDate *)expiresAt;
 
 @end

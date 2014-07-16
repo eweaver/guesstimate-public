@@ -32,6 +32,27 @@
     return invite;
 }
 
++(void)initWithGameObject:(GuesstimateGame *)gameObject inviterObject:(GuesstimateUser *)inviterObject onCompleteBlock:(void (^)(GuesstimateInvite *invite, NSError *error))onComplete {
+    __block GuesstimateInvite *invite = [[GuesstimateInvite alloc] init];
+    invite.game = gameObject;
+    invite.user = inviterObject;
+    
+    PFQuery *query = [PFQuery queryWithClassName:@"Invite"];
+    PFObject *game = [PFObject objectWithClassName:@"Game"];
+    game.objectId = gameObject.objectId;
+    
+    [query whereKey:@"gameId" equalTo:game];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *inviteObjects, NSError *error) {
+        if(!error && inviteObjects.count == 1) {
+            PFObject *inviteObject = inviteObjects[0];
+            invite.objectId = inviteObject.objectId;
+            onComplete(invite, nil);
+        } else {
+            onComplete(nil, error);
+        }
+    }];
+}
+
 +(void)sendInvite:(NSString *)gameId user:(NSString *)invitedId onCompleteBlock:(void (^)(BOOL succeeded, NSError *error))onComplete {
     NSArray *pushMapping = @[invitedId];
     [[self createInvite:gameId user:invitedId] saveInBackgroundWithBlock:onComplete];
@@ -65,16 +86,11 @@
 }
 
 +(void)sendInvitePushNotifications:(NSString *)gameId users:(NSArray *)users {
-    NSString *pushChannel = [NSString stringWithFormat:@"%@-invites", gameId];
-    [GuesstimatePushNotifications joinPushChannel:pushChannel withUsers:users onCompleteBlock:^(BOOL succeeded, NSError *error) {
-        if(succeeded == YES) {
-            GuesstimateUser *user = [GuesstimateUser getAuthUser];
-            NSDictionary *pushData = @{@"gameId":gameId, @"creator":user.objectId};
-            NSDate *date = [NSDate date];
-            NSDate *expiresAt = [date dateByAddingTimeInterval:60*60*1];
-            [GuesstimatePushNotifications sendPushToChannel:pushChannel type:@"invite" message:@"You have been invited to a game!" pushData:pushData expiresAt:expiresAt];
-        }
-    }];
+    GuesstimateUser *user = [GuesstimateUser getAuthUser];
+    NSDictionary *pushData = @{@"gameId":gameId, @"creator":user.objectId};
+    NSDate *date = [NSDate date];
+    NSDate *expiresAt = [date dateByAddingTimeInterval:60*60*1];
+    [GuesstimatePushNotifications sendPushToUsers:users type:@"invite" message:@"You have been invited to a game!" pushData:pushData expiresAt:expiresAt];
 }
 
 +(void)getMyInvites:(void (^)(NSArray *invites, NSError *error))onComplete {
@@ -135,22 +151,14 @@
         
         [guess saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if(succeeded == YES) {
-                NSString *gameChannel = [NSString stringWithFormat:@"%@-game", self.game.objectId];
-                // Send message to all users current in the game channel
-                NSDictionary *pushData = @{@"gameId":self.game.objectId};
-                NSDate *date = [NSDate date];
-                NSDate *expiresAt = [date dateByAddingTimeInterval:60*60*1];
-                [GuesstimatePushNotifications sendPushToChannel:gameChannel type:@"newplayer" message:@"A player has joined the game!" pushData:pushData expiresAt:expiresAt];
-                
-                // Subscribe to the game channel
-                NSArray *pushMapping = @[authUser.objectId];
-                [GuesstimatePushNotifications joinPushChannel:gameChannel withUsers:pushMapping onCompleteBlock:^(BOOL succeeded, NSError *error) {
-                    //noop
-                }];
-                
-                // Leave invites channel
-                [GuesstimatePushNotifications leavePushChannel:[NSString stringWithFormat:@"%@-invites", self.game.objectId] withUsers:pushMapping onCompleteBlock:^(BOOL succeeded, NSError *error) {
-                    //noop
+                [self.game loadGameGuesses:^(BOOL succeeded, NSError *error) {
+                    GuesstimateUser *user = [GuesstimateUser getAuthUser];
+                    NSDictionary *pushData = @{@"gameId":self.game.objectId, @"newPlayer":user.objectId};
+                    NSDate *date = [NSDate date];
+                    NSDate *expiresAt = [date dateByAddingTimeInterval:60*60*1];
+                    NSArray *users = [self.game getOtherGamePlayers];
+                    NSLog(@"%@", users);
+                    [GuesstimatePushNotifications sendPushToUsers:users type:@"newPlayer" message:@"A player has joined the game!" pushData:pushData expiresAt:expiresAt];
                 }];
             }
             onComplete(succeeded, error);

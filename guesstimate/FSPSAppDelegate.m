@@ -18,8 +18,6 @@
 #import "GuesstimatePushNotifications.h"
 #import "GuesstimatePushHandler.h"
 
-#import "MBProgressHUD.h"
-
 #import "MMDrawerController.h"
 #import "MMDrawerVisualState.h"
 
@@ -40,7 +38,10 @@
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-    [GuesstimatePushNotifications saveDeviceToken:deviceToken];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if(![defaults objectForKey:@"pushToken"]) {
+        [GuesstimatePushNotifications saveDeviceToken:deviceToken];
+    }
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {

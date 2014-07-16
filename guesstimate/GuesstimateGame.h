@@ -57,4 +57,7 @@
 #pragma mark users
 -(void)addUser:(NSString *)userId expiresAt:(NSDate *)expiresAt;
 
+- (NSArray *) getPlayerIds;
+- (NSArray *) getOtherGamePlayers;
+
 @end

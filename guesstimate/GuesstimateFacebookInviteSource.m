@@ -12,6 +12,8 @@
 @implementation GuesstimateFacebookInviteSource
 
 +(void) getContactsAndInvitees:(void (^)(NSArray *contacts, NSArray *invitees, NSError *error))onComplete {
+    // Add check for linked FB account
+    
     void ( ^requestBlock )( void );
     requestBlock = ^( void )
     {

@@ -21,6 +21,7 @@
 
 @property (strong, nonatomic) UIImageView *categoryBgImage;
 
+-(void)silentRefreshGame;
 -(void)refreshGame;
 
 @end

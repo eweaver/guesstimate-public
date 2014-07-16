@@ -92,24 +92,44 @@
 }
 
 -(void)submitAnswer {
-    [self displayWaiting];
     // TODO: stop using tags :/
     UITextField *answerField = (UITextField *) [self.view viewWithTag:1];
     NSNumberFormatter * f = [[NSNumberFormatter alloc] init];
     [f setNumberStyle:NSNumberFormatterDecimalStyle];
     NSNumber *guess = [f numberFromString:answerField.text];
     
+    if(!guess) {
+        answerField.placeholder = @"Answer must be a number!";
+        return;
+    }
+    
+    [GuesstimateApplication displayWaiting:self.view withText:@"" withSubtext:@"Submitting answer..."];
+    
     GuesstimateUser *authUser = [GuesstimateUser getAuthUser];
     NSDictionary *playerMetadata = [self.answers objectForKey:authUser.objectId];
     
     [self.game submitGuess:[playerMetadata objectForKey:@"guessId"] guess:guess onCompleteBlock:^(BOOL succeeded, NSError *error) {
-        [self hideWaiting];
+        [GuesstimateApplication hideWaiting:self.view];
         if(succeeded) {
             NSInteger tag = [[playerMetadata objectForKey:@"tag"] integerValue];
             UILabel *playerAnswer = (UILabel *) [self.view viewWithTag:tag];
             playerAnswer.text = [guess stringValue];
             
             [self endGameForLocalPlayer];
+            [self silentRefreshGame];
+        } else {
+            [[GuesstimateApplication getErrorAlert:[error userInfo][@"error"]] show];
+        }
+    }];
+}
+
+-(void)silentRefreshGame {
+    [GuesstimateGame getGameData:self.gameId onCompleteBlock:^(GuesstimateGame *game, NSError *error) {
+        if(game) {
+            [game loadGameGuesses:^(BOOL succeeded, NSError *error) {
+                [GuesstimateApplication hideWaiting:self.view];
+                [self updatePlayers];
+            }];
         } else {
             [[GuesstimateApplication getErrorAlert:[error userInfo][@"error"]] show];
         }
@@ -119,13 +139,13 @@
 -(void)refreshGame {
     // Put more logic in to reduce reloading the entire game.
     // Really only need to reload players list & guesses
-    self.questionLabel.text = @"loading...";
+    //self.questionLabel.text = @"loading...";
     [self removePlayers];
     [self startGame];
 }
 
 -(void)startGame {
-    [self displayWaiting];
+    [GuesstimateApplication displayWaiting:self.view withText:@"Loading game..."];
     [GuesstimateGame getGameData:self.gameId onCompleteBlock:^(GuesstimateGame *game, NSError *error) {
         if(game) {
             
@@ -146,13 +166,12 @@
             self.questionLabel.text = game.questionText;
             
             [self.game loadGameGuesses:^(BOOL succeeded, NSError *error) {
-                [self hideWaiting];
+                [GuesstimateApplication hideWaiting:self.view];
                 [self displayPlayers];
             }];
         } else {
             [[GuesstimateApplication getErrorAlert:[error userInfo][@"error"]] show];
         }
-        
     }];
 }
 
@@ -161,16 +180,73 @@
     self.playersList = nil;
 }
 
--(void)displayPlayers {
+-(void)updatePlayers {
+    GuesstimateUser *authUser = [GuesstimateUser getAuthUser];
+    BOOL gameIsComplete = YES;
+    NSInteger counter = 1;
+    double smallestDiff = -1;
+    NSString *winnerId;
     
+    for(NSDictionary *guessData in self.game.guesses) {
+        GuesstimateUser *user = [guessData objectForKey:@"userId"];
+        NSNumber *diff = nil;
+        
+        NSString *guessString = [guessData objectForKey:@"guess"];
+        NSString *revealedGuess = guessString;
+        NSString *name;
+        if([authUser.objectId isEqual:user.objectId]) {
+            name = @"me";
+            if(! [guessString isEqualToString:@"N/A"]) {
+                [self endGameForLocalPlayer];
+                
+                diff = [NSNumber numberWithDouble:[[guessData objectForKey:@"diff"] doubleValue]];
+            } else {
+                gameIsComplete = NO;
+            }
+        } else {
+            name = user.name;
+            if(! [guessString isEqualToString:@"N/A"]) {
+                guessString = @"???";
+                diff = [NSNumber numberWithDouble:[[guessData objectForKey:@"diff"] doubleValue]];
+            } else {
+                gameIsComplete = NO;
+            }
+        }
+        
+        if(smallestDiff == -1 || smallestDiff > [diff doubleValue]) {
+            smallestDiff = [diff doubleValue];
+            winnerId = user.objectId;
+        }
+        
+        NSInteger tag = 400 + counter;
+        NSString *tagId = [NSString stringWithFormat: @"%d", (NSInteger)tag];
+        
+        NSDictionary *playerMetadata = [[NSDictionary alloc] initWithObjectsAndKeys:
+                                        tagId, @"tag",
+                                        guessString, @"answer",
+                                        revealedGuess, @"revealed",
+                                        [guessData objectForKey:@"guessId"], @"guessId",
+                                        nil];
+        
+        [self.answers setObject:playerMetadata forKey:user.objectId];
+        
+        counter++;
+    }
+    
+    if(gameIsComplete == YES) {
+        [self displayEndGame:winnerId];
+    }
+}
+
+-(void)displayPlayers {
     self.playersList = [[UIView alloc] init];
-    int counter = 1;
+    NSInteger counter = 1;
     self.answers = [[NSMutableDictionary alloc] initWithCapacity:[self.game.guesses count]];
     GuesstimateUser *authUser = [GuesstimateUser getAuthUser];
     BOOL gameIsComplete = YES;
     double smallestDiff = -1;
     NSString *winnerId;
-    
+
     for(NSDictionary *guessData in self.game.guesses) {
         GuesstimateUser *user = [guessData objectForKey:@"userId"];
         NSNumber *diff = nil;
@@ -204,7 +280,7 @@
         
         UIView *playerView = [self createPlayerView:counter name:name guess:guessString];
         NSInteger tag = 400 + counter;
-        NSString *tagId = [NSString stringWithFormat: @"%d", (int)tag];
+        NSString *tagId = [NSString stringWithFormat: @"%d", (NSInteger)tag];
         [self.playersList addSubview:playerView];
         
         NSDictionary *playerMetadata = [[NSDictionary alloc] initWithObjectsAndKeys:

@@ -428,22 +428,6 @@ static NSInteger offset = 70;
     return newImage;
 }
 
-# pragma waiting
-
-- (void)displayWaiting {
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        
-    });
-}
-
-- (void)hideWaiting {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-    });
-
-}
-
 #pragma mark auth
 
 -(void)logoutAuthUser {

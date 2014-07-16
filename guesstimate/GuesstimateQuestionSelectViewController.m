@@ -41,6 +41,7 @@ NSInteger maxQuestionPosition = 0;
         [self.view addSubview:self.categoryTitle];
         
         self.categoriesTable = [[UITableView alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 150) / 2, 26, 150, 28)];
+        self.categoriesTable.layer.zPosition = 25.0f;
         
         [self loadCategories];
         [self loadQuestions];
@@ -177,11 +178,11 @@ NSInteger maxQuestionPosition = 0;
 #pragma mark questions
 
 -(void)loadQuestions {
-    self.questionText.text = @"loading...";
-    [self displayWaiting];
+    [GuesstimateApplication displayWaiting:self.view withText:@"Loading..."];
     [GuesstimateQuestion getQuestions:self.categoryId onCompleteBlock:^(NSArray *questions, NSError *error) {
-        [self hideWaiting];
+        [GuesstimateApplication hideWaiting:self.view];
         if(questions) {
+            questionPosition = 0;
             [self displayQuestions:questions];
         } else {
             [[GuesstimateApplication getErrorAlert:[error userInfo][@"error"]] show];
@@ -244,21 +245,20 @@ NSInteger maxQuestionPosition = 0;
     //Category title
     self.categoryTitle.text = [NSString stringWithFormat:@"Category: %@", self.category.title];
     [self.view sendSubviewToBack:self.categoryBgImage];
-    [self.view bringSubviewToFront:self.playButton];
 
 }
 
 #pragma mark segue/transition
 
 -(void)startGame {
-    [self displayWaiting];
+    [GuesstimateApplication displayWaiting:self.view withText:@"Starting Game..."];
     
     GuesstimateQuestion *question = (GuesstimateQuestion *) [self.questions objectAtIndex:questionPosition];
     NSString *questionId = question.objectId;
     GuesstimateUser *user = [GuesstimateUser getAuthUser];
     NSString *preview = self.questionText.text;
     [GuesstimateGame createGame:self.categoryId withQuestion:questionId creator:user.objectId preview:preview onCompleteBlock:^(GuesstimateGame *game, NSError *error) {
-        [self hideWaiting];
+        [GuesstimateApplication hideWaiting:self.view];
         if(game) {
             GuesstimateInviteViewController *viewController = [[GuesstimateInviteViewController alloc] init];
             viewController.gameId = game.objectId;
@@ -278,11 +278,12 @@ NSInteger maxQuestionPosition = 0;
     self.isCategoryListExpanded = NO;
     
     self.categoriesTable.backgroundColor = [UIColor colorWithWhite:1 alpha:1];
-    self.categoriesTable.frame = newFrame;
     
+    self.categoriesTable.frame = newFrame;
     [self.categoriesTable reloadData];
     [self.categoriesTable setNeedsLayout];
     [self.categoriesTable setNeedsDisplayInRect:newFrame];
+    
 }
 
 -(void)expandCategoriesTable {
@@ -291,12 +292,15 @@ NSInteger maxQuestionPosition = 0;
     self.isCategoryListExpanded = YES;
     
     self.categoriesTable.backgroundColor = [UIColor colorWithWhite:1 alpha:0.85];
-    self.categoriesTable.frame = newFrame;
-    [self.view bringSubviewToFront:self.categoriesTable];
-
+    //[self.view bringSubviewToFront:self.categoriesTable];
     [self.categoriesTable reloadData];
     [self.categoriesTable setNeedsLayout];
     [self.categoriesTable setNeedsDisplayInRect:newFrame];
+    self.categoriesTable.frame = newFrame;
+
+    /*[UIView animateWithDuration:0.25f animations:^{
+        
+    }];*/
 }
 
 #pragma mark UITableView
@@ -347,11 +351,11 @@ NSInteger maxQuestionPosition = 0;
         [[GuesstimateApplication getErrorAlert:@"This category is locked!"] show];
         return;
     }
-    
-    
+
     if(self.isCategoryListExpanded == YES) {
         if(categoryPosition != indexPath.row) {
             categoryPosition = indexPath.row;
+            
             self.categoryId = category.objectId;
             [self loadQuestions];
         }

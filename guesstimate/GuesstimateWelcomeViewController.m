@@ -80,7 +80,7 @@
         [self pushSelectionViewController:viewController];
 
     } else {
-        [self hideWaiting];
+        [GuesstimateApplication hideWaiting:self.view];
     }
 }
 
@@ -99,7 +99,7 @@
 # pragma mark facebook
 
 - (void)loginButtonTouchHandler:(UITapGestureRecognizer *)gr {
-    [self displayWaiting];
+    [GuesstimateApplication displayWaiting:self.view withText:@"" withSubtext:@"Logging in with Facebook..."];
     [PFFacebookUtils initializeFacebook];
     
     // The permissions requested from the user
@@ -107,7 +107,7 @@
     
     // Login PFUser using Facebook
     [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
-        [self hideWaiting];
+        [GuesstimateApplication hideWaiting:self.view];
 
         if (!user) {
             if (!error) {
@@ -116,7 +116,7 @@
                 [[GuesstimateApplication getErrorAlert:@"FBError"] show];
             }
         } else {
-            GuesstimateUser *authUser = [GuesstimateUser initAuthUser:user];
+            //GuesstimateUser *authUser = [GuesstimateUser initAuthUser:user];
             
             if(user.isNew) {
                 [GuesstimateFacebookLibrary meWithBlock:^(NSDictionary *userData, NSError *error) {

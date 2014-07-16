@@ -45,9 +45,9 @@
 {
     [super viewDidLoad];
     
-    [self displayWaiting];
+    [GuesstimateApplication displayWaiting:self.view withText:@"" withSubtext:@"Loading Facebook contacts..."];
     [GuesstimateFacebookInviteSource getContactsAndInvitees:^(NSArray *contacts, NSArray *invitees, NSError *error) {
-        [self hideWaiting];
+        [GuesstimateApplication hideWaiting:self.view];
         if(error) {
             [[GuesstimateApplication getErrorAlert:[error userInfo][@"error"]] show];
         } else {

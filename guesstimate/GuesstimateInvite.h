@@ -19,6 +19,7 @@
 
 +(GuesstimateInvite *)initInvite:(NSString *)objectId game:(GuesstimateGame *)game inviter:(GuesstimateUser *)inviter;
 +(GuesstimateInvite *)initInvite:(NSString *)objectId gameObject:(PFObject *)gameObject inviterObject:(PFUser *)inviterObject;
++(void)initWithGameObject:(GuesstimateGame *)gameObject inviterObject:(GuesstimateUser *)inviterObject onCompleteBlock:(void (^)(GuesstimateInvite *invite, NSError *error))onComplete;
 
 +(void)sendInvite:(NSString *)gameId user:(NSString *)invitedId onCompleteBlock:(void (^)(BOOL succeeded, NSError *error))onComplete;
 +(void)sendInvites:(NSString *)gameId userIds:(NSArray *)invitedUserIds onCompleteBlock:(void (^)(BOOL succeeded, NSError *error))onComplete;

@@ -23,7 +23,10 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        
+        // Create static sections of table view
+        [self createMenuWithNumSections:2];
+        [self addMenuItems:@[] header:@"All Contacts" inSection:0];
+        [self addMenuItems:@[@"Facebook", @"Phone Contacts", @"Manually"] header:@"Add Contacts" inSection:1];
     }
     
     return self;
@@ -37,36 +40,28 @@
 {
     [super viewWillAppear:animated];
     
-    [GuesstimateApplication displayWaiting:self.view];
+    [GuesstimateApplication displayWaiting:self.view withText:@"Loading contacts..."];
     
-    // Create static sections of table view
-    [self createMenuWithNumSections:2];
-    [self addMenuItems:@[] header:@"All Contacts" inSection:0];
-    [self addMenuItems:@[@"Facebook", @"Phone Contacts", @"Manually"] header:@"Add Contacts" inSection:1];
+    
     
     void ( ^completeBlock )( void );
     completeBlock = ^( void )
     {
         [GuesstimateApplication hideWaiting:self.view];
         
-        NSInteger tableHeight = [self getHeight:44 rowHeight:36];
+        NSInteger tableHeight = [self getHeight:44 rowHeight:44];
         NSInteger maxHeight = [UIScreen mainScreen].bounds.size.height - 20;
         tableHeight = MIN(tableHeight, maxHeight);
         
         self.menuTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 20, [UIScreen mainScreen].bounds.size.width, tableHeight)];
         self.menuTable.delegate = self;
         self.menuTable.dataSource = self;
-        self.menuTable.rowHeight = 36;
+        self.menuTable.rowHeight = 44;
         self.menuTable.separatorStyle = UITableViewCellSeparatorStyleNone;
         self.menuTable.backgroundColor = [UIColor clearColor];
         
-        if(tableHeight > maxHeight) {
-            self.menuTable.scrollEnabled = YES;
-            self.menuTable.bounces = YES;
-        } else {
-            self.menuTable.scrollEnabled = NO;
-            self.menuTable.bounces = NO;
-        }
+        self.menuTable.scrollEnabled = YES;
+        self.menuTable.bounces = YES;
         
         [self.view addSubview:self.menuTable];
     };
@@ -131,7 +126,7 @@
             break;
     }
     
-    [GuesstimateApplication displayWaiting:self.view];
+    [GuesstimateApplication displayWaiting:self.view withText:@"Loading..."];
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:NO completion:^(BOOL finished) {
         [GuesstimateApplication hideWaiting:self.view];
     }];

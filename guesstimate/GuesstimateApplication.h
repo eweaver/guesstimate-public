@@ -16,7 +16,12 @@
 
 + (id)sharedApp;
 + (UIAlertView *)getErrorAlert:(NSString *)msg;
-+ (void)displayWaiting:(UIView *)view ;
+
+
++ (void)displayWaiting:(UIView *)view;
++ (void)displayWaiting:(UIView *)view withText:(NSString *)text;
++ (void)displayWaiting:(UIView *)view withText:(NSString *)text withSubtext:(NSString *)subtext;
+
 + (void)hideWaiting:(UIView *)view;
 
 @end

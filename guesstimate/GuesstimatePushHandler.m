@@ -36,14 +36,14 @@
             app.pushData = userInfo;
         } else {
             if(! [self.authUser.objectId isEqualToString:[userInfo objectForKey:@"creator"]]) {
-                UIAlertView *pushView = [[UIAlertView alloc] initWithTitle:@"PUSH DEBUG" message:[aps objectForKey:@"alert"] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Join Game", nil];
+                UIAlertView *pushView = [[UIAlertView alloc] initWithTitle:@"Game Invite Placeholder" message:[aps objectForKey:@"alert"] delegate:self cancelButtonTitle:@"Decline" otherButtonTitles:@"Join Game", nil];
                 [pushView show];
             }
         }
     }
     
     // Player Join
-    else if([type isEqualToString:@"newplayer"]) {
+    else if([type isEqualToString:@"newPlayer"]) {
         if( ! self.authUser ) {
             GuesstimateApplication *app = [GuesstimateApplication sharedApp];
             app.hasDelayedPush = YES;
@@ -59,8 +59,7 @@
                 if([vc isKindOfClass:[GuesstimatePlayGameViewController class]]) {
                     gameController = (GuesstimatePlayGameViewController *) vc;
                     if([gameController.gameId isEqualToString:[self.pushData objectForKey:@"gameId"]]) {
-                        NSLog(@"We are in the game!");
-                        [gameController refreshGame];
+                        [gameController silentRefreshGame];
                     }
                     break;
                 }
@@ -68,12 +67,76 @@
             
             // Not in the game, show the Alert to see if we should go there
             if(! gameController) {
-                UIAlertView *pushView = [[UIAlertView alloc] initWithTitle:@"PUSH DEBUG" message:[aps objectForKey:@"alert"] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Go to Game", nil];
+                UIAlertView *pushView = [[UIAlertView alloc] initWithTitle:@"Player Joined Placeholder" message:[aps objectForKey:@"alert"] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Go to Game", nil];
                 [pushView show];
             }
         }
     }
     
+    // Submit answer
+    else if([type isEqualToString:@"submitAnswer"]) {
+        if( ! self.authUser ) {
+            GuesstimateApplication *app = [GuesstimateApplication sharedApp];
+            app.hasDelayedPush = YES;
+            app.pushData = userInfo;
+        } else {
+            FSPSAppDelegate *myDelegate = [UIApplication sharedApplication].delegate;
+            MMDrawerController *drawerController = (MMDrawerController *) myDelegate.window.rootViewController;
+            UINavigationController *navController = (UINavigationController *) drawerController.centerViewController;
+            GuesstimatePlayGameViewController *gameController;
+            
+            // Check if the user is currently in the game, if not show an alert to push to the new game or not
+            for(UIViewController *vc in navController.viewControllers) {
+                if([vc isKindOfClass:[GuesstimatePlayGameViewController class]]) {
+                    gameController = (GuesstimatePlayGameViewController *) vc;
+                    if([gameController.gameId isEqualToString:[self.pushData objectForKey:@"gameId"]]) {
+                        [gameController silentRefreshGame];
+                    }
+                    break;
+                }
+            }
+            
+            // Not in the game, show the Alert to see if we should go there
+            if(! gameController) {
+                UIAlertView *pushView = [[UIAlertView alloc] initWithTitle:@"Answer Submitted Placeholder" message:[aps objectForKey:@"alert"] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Go to Game", nil];
+                [pushView show];
+            }
+        }
+
+    }
+    
+    // End Game
+    else if([type isEqualToString:@"endGame"]) {
+        if( ! self.authUser ) {
+            GuesstimateApplication *app = [GuesstimateApplication sharedApp];
+            app.hasDelayedPush = YES;
+            app.pushData = userInfo;
+        } else {
+            FSPSAppDelegate *myDelegate = [UIApplication sharedApplication].delegate;
+            MMDrawerController *drawerController = (MMDrawerController *) myDelegate.window.rootViewController;
+            UINavigationController *navController = (UINavigationController *) drawerController.centerViewController;
+            GuesstimatePlayGameViewController *gameController;
+            
+            // Check if the user is currently in the game, if not show an alert to push to the new game or not
+            for(UIViewController *vc in navController.viewControllers) {
+                if([vc isKindOfClass:[GuesstimatePlayGameViewController class]]) {
+                    gameController = (GuesstimatePlayGameViewController *) vc;
+                    if([gameController.gameId isEqualToString:[self.pushData objectForKey:@"gameId"]]) {
+                        [gameController silentRefreshGame];
+                    }
+                    break;
+                }
+            }
+            
+            // Not in the game, show the Alert to see if we should go there
+            if(! gameController) {
+                UIAlertView *pushView = [[UIAlertView alloc] initWithTitle:@"End Game Placeholder" message:[aps objectForKey:@"alert"] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Go to Game", nil];
+                [pushView show];
+            }
+        }
+        
+    }
+
 }
 
 #pragma mark UIAlertViewDelegate
@@ -84,10 +147,14 @@
     
     // Join Game
     if([title isEqualToString:@"Join Game"]) {
+        FSPSAppDelegate *myDelegate = [UIApplication sharedApplication].delegate;
+        
+        MMDrawerController *drawerController = (MMDrawerController *) myDelegate.window.rootViewController;
+        UINavigationController *navController = (UINavigationController *) drawerController.centerViewController;
+        [GuesstimateApplication displayWaiting:navController.view withText:@"Joining game..."];
+        
         [GuesstimateGame getGameData:[self.pushData objectForKey:@"gameId"] onCompleteBlock:^(GuesstimateGame *game, NSError *error) {
-            FSPSAppDelegate *myDelegate = [UIApplication sharedApplication].delegate;
-
-            MMDrawerController *drawerController = (MMDrawerController *) myDelegate.window.rootViewController;
+            
             GuesstimatePlayGameViewController *vc = [[GuesstimatePlayGameViewController alloc] init];
             vc.gameId = [self.pushData objectForKey:@"gameId"];
             
@@ -96,11 +163,14 @@
             userObject.objectId = [self.pushData objectForKey:@"creator"];
             userObject[@"username"] = @"tmp";
             GuesstimateUser *user = [GuesstimateUser initWith:userObject];
-            
-            GuesstimateInvite *invite = [GuesstimateInvite initInvite:@"TMP" game:game inviter:user];
-            [invite acceptInvite:^(BOOL succeeded, NSError *error) {
-                UINavigationController *navController = (UINavigationController *) drawerController.centerViewController;
-                [navController pushViewController:vc animated:YES];
+
+            [GuesstimateInvite initWithGameObject:game inviterObject:user onCompleteBlock:^(GuesstimateInvite *invite, NSError *error) {
+                NSLog(@"%@", invite);
+                NSLog(@"%@", error);
+                [invite acceptInvite:^(BOOL succeeded, NSError *error) {
+                    [GuesstimateApplication hideWaiting:navController.view];
+                    [navController pushViewController:vc animated:YES];
+                }];
             }];
         }];
     }

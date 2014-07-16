@@ -39,9 +39,6 @@
 - (void)textFieldDidBecomeActive:(NSInteger) tag;
 - (void)textFieldsDidBecomeInactive;
 
-- (void)displayWaiting;
-- (void)hideWaiting;
-
 - (void)addMenuItems;
 - (void)addMenuItemsStackedRight:(UIView *)view;
 - (void)setBackButton;

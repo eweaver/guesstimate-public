@@ -25,10 +25,21 @@
 }
 
 + (void)displayWaiting:(UIView *)view {
-    [MBProgressHUD showHUDAddedTo:view animated:YES];
-    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+    [GuesstimateApplication getHUD:view];
+    /*dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         
-    });
+    });*/
+}
+
++ (void)displayWaiting:(UIView *)view withText:(NSString *)text {
+    MBProgressHUD *hud = [GuesstimateApplication getHUD:view];
+    hud.labelText = text;
+}
+
++ (void)displayWaiting:(UIView *)view withText:(NSString *)text withSubtext:(NSString *)subtext {
+    MBProgressHUD *hud = [GuesstimateApplication getHUD:view];
+    hud.labelText = text;
+    hud.detailsLabelText = subtext;
 }
 
 + (void)hideWaiting:(UIView *)view {
@@ -37,4 +48,18 @@
     });
     
 }
+
++ (MBProgressHUD *)getHUD:(UIView *)view {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
+    hud.layer.zPosition = 100.0f;
+    
+    hud.labelColor = [UIColor whiteColor];
+    hud.labelFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:22.0f];
+    
+    hud.detailsLabelColor = [UIColor whiteColor];
+    hud.detailsLabelFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0f];
+    
+    return hud;
+}
+
 @end

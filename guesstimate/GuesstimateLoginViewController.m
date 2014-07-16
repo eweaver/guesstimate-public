@@ -35,7 +35,7 @@
     [super viewDidLoad];
     
     // Login Fields
-    self.idText = [self addTextField:@"identifier" placeholder:@"Email" offset:189 secure:NO];
+    self.idText = [self addTextField:@"identifier" placeholder:@"Username" offset:189 secure:NO];
     self.idText.returnKeyType = UIReturnKeyNext;
     self.idText.keyboardType = UIKeyboardTypeEmailAddress;
     self.idText.tag = 1;
@@ -98,9 +98,9 @@
     NSString* identifier = self.idText.text;
     NSString* password = self.passwordText.text;
     
-    [self displayWaiting];
+    [GuesstimateApplication displayWaiting:self.view withText:@"Logging in..."];
     [GuesstimateUser loginWithName:identifier withPassword:password onCompletionBlock:^(GuesstimateUser *user, NSError *error) {
-        
+        [GuesstimateApplication hideWaiting:self.view];
         if(error == nil) {
             GuesstimateQuestionSelectViewController *vc = [[GuesstimateQuestionSelectViewController alloc] init];
             [self pushSelectionViewController:vc];

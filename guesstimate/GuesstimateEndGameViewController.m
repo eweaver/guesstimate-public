@@ -61,7 +61,7 @@ static NSInteger offset = 0;
 }
 
 -(void)displayResults {
-    [self displayWaiting];
+    [GuesstimateApplication displayWaiting:self.view withText:@"Game Over!"];
     [GuesstimateGame getGameData:self.gameId onCompleteBlock:^(GuesstimateGame *game, NSError *error) {
         if(game) {
             self.game = game;
@@ -79,7 +79,7 @@ static NSInteger offset = 0;
             
             
             [self.game loadGameGuesses:^(BOOL succeeded, NSError *error) {
-                [self hideWaiting];
+                [GuesstimateApplication hideWaiting:self.view];
                 if([self.game scoreGame] == YES) {
                     [self displayAnswer];
                     [self displayPlayerGuesses];

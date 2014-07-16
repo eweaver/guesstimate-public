@@ -121,13 +121,14 @@
     
     [gameObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if(succeeded == YES) {
+            //[GuesstimatePushNotifications setInstallationToCurrentUser:[[GuesstimateUser getAuthUser] objectId]];
             GuesstimateGame *game = [GuesstimateGame initGame:gameObject.objectId withCategory:categoryId withQuestion:questionId];
             onComplete(game, error);
             [game addUser:creatorId expiresAt:expiresAt];
-            NSArray *pushMapping = @[creatorId];
+            /*NSArray *pushMapping = @[creatorId];
             [GuesstimatePushNotifications joinPushChannel:[NSString stringWithFormat:@"%@-game", gameObject.objectId] withUsers:pushMapping onCompleteBlock:^(BOOL succeeded, NSError *error) {
                 //noop
-            }];
+            }];*/
         } else {
             onComplete(nil, error);
         }
@@ -170,7 +171,7 @@
     PFQuery *quessQuery = [PFQuery queryWithClassName:@"Guess"];
     PFObject *gameObject = [PFObject objectWithClassName:@"Game"];
     gameObject.objectId = self.objectId;
-    
+
     [quessQuery whereKey:@"gameId" equalTo:gameObject];
     [quessQuery includeKey:@"userId"];
     
@@ -213,20 +214,61 @@
     guessObject[@"diff"] = [GuesstimateGame getAnswerDiff:guess answer:self.answer];
     
     [guessObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if(succeeded) {
+            NSArray *otherPlayers = [self getOtherGamePlayers];
+            GuesstimateUser *user = [GuesstimateUser getAuthUser];
+            NSDictionary *pushData = @{@"gameId":self.objectId, @"guessOwner":user.objectId};
+            NSDate *date = [NSDate date];
+            NSDate *expiresAt = [date dateByAddingTimeInterval:60*60*1];
+
+            [GuesstimatePushNotifications sendPushToUsers:otherPlayers type:@"submitAnswer" message:@"An answer has been submitted" pushData:pushData expiresAt:expiresAt];
+        }
         onComplete(succeeded, error);
     }];
 }
 
 -(void)completeGame:(NSString *)winnerId {
     PFObject *gameObject = [PFObject objectWithClassName:@"Game"];
-    
     gameObject.objectId = self.objectId;
     gameObject[@"isComplete"] = @YES;
     gameObject[@"winner"] = winnerId;
     
     [gameObject saveInBackground];
+    
+    NSArray *otherPlayers = [self getPlayerIds];
+    NSDictionary *pushData = @{@"gameId":self.objectId};
+    NSDate *date = [NSDate date];
+    NSDate *expiresAt = [date dateByAddingTimeInterval:60*60*1];
+    
+    [GuesstimatePushNotifications sendPushToUsers:otherPlayers type:@"gameEnd" message:@"A game has ended!" pushData:pushData expiresAt:expiresAt];
 }
 
+# pragma mark move this
+- (NSArray *) getPlayerIds {
+    NSMutableArray *otherPlayers = [[NSMutableArray alloc] init];
+    
+    for(NSDictionary *guess in self.guesses) {
+        GuesstimateUser *otherUser = [guess objectForKey:@"userId"];
+        [otherPlayers addObject:otherUser.objectId];
+    }
+    
+    return [NSArray arrayWithArray:otherPlayers];
+
+}
+
+- (NSArray *) getOtherGamePlayers {
+    GuesstimateUser *user = [GuesstimateUser getAuthUser];
+    NSMutableArray *otherPlayers = [[NSMutableArray alloc] init];
+    
+    for(NSDictionary *guess in self.guesses) {
+        GuesstimateUser *otherUser = [guess objectForKey:@"userId"];
+        if(![otherUser.objectId isEqual:user.objectId]) {
+            [otherPlayers addObject:otherUser.objectId];
+        }
+    }
+    
+    return [NSArray arrayWithArray:otherPlayers];
+}
 
 -(BOOL)scoreGame {
     //if(self.isComplete == NO) {

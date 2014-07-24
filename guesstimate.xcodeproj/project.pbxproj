@@ -44,6 +44,7 @@
 		5A3446471925C8D1004F1DD3 /* ic_friends@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5A3446411925C8D1004F1DD3 /* ic_friends@2x.png */; };
 		5A4FA188190D8A000045BC7A /* GuesstimateApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A4FA187190D8A000045BC7A /* GuesstimateApplication.m */; };
 		5A4FA194190D8F280045BC7A /* GuesstimateConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A4FA193190D8F280045BC7A /* GuesstimateConstants.m */; };
+		5A5872CF197E0A4200A5DBD8 /* GuesstimateEndGamePlayerEntryTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A5872CE197E0A4200A5DBD8 /* GuesstimateEndGamePlayerEntryTableViewCell.m */; };
 		5AB9C65D1905E13E008D050A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AB9C65C1905E13D008D050A /* Foundation.framework */; };
 		5AB9C65F1905E13E008D050A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AB9C65E1905E13E008D050A /* CoreGraphics.framework */; };
 		5AB9C6611905E13E008D050A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AB9C6601905E13E008D050A /* UIKit.framework */; };
@@ -82,6 +83,12 @@
 		5AE113C01925D18C00C65FE8 /* btn_arrowright@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5AE113B61925D18C00C65FE8 /* btn_arrowright@2x.png */; };
 		5AEB504D1914B034002C999D /* GuesstimateTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AEB504C1914B034002C999D /* GuesstimateTransitionAnimator.m */; };
 		5AECA97D197607CD008E0B61 /* GuesstimateTicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AECA97C197607CD008E0B61 /* GuesstimateTicker.m */; };
+		5AECA98019761D28008E0B61 /* menu_back.png in Resources */ = {isa = PBXBuildFile; fileRef = 5AECA97E19761D28008E0B61 /* menu_back.png */; };
+		5AECA98119761D28008E0B61 /* menu_back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5AECA97F19761D28008E0B61 /* menu_back@2x.png */; };
+		5AECA9841978D34D008E0B61 /* GuesstimateInvitesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AECA9831978D34D008E0B61 /* GuesstimateInvitesViewController.m */; };
+		5AECA9871978DABA008E0B61 /* GuesstimateGameInviteTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AECA9861978DABA008E0B61 /* GuesstimateGameInviteTableViewCell.m */; };
+		5AECA98A197C0F56008E0B61 /* GuesstimateMyGamesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AECA989197C0F56008E0B61 /* GuesstimateMyGamesViewController.m */; };
+		5AECA98D197CA615008E0B61 /* GuesstimatePlayerEntryTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AECA98C197CA615008E0B61 /* GuesstimatePlayerEntryTableViewCell.m */; };
 		5AF0B4D21925E0640004E971 /* cat_movies.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5AF0B4D01925E0640004E971 /* cat_movies.jpg */; };
 		5AF0B4D31925E0640004E971 /* cat_movies@2x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5AF0B4D11925E0640004E971 /* cat_movies@2x.jpg */; };
 		5AF0B4DE1925E59D0004E971 /* cat_geography.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5AF0B4D41925E59D0004E971 /* cat_geography.jpg */; };
@@ -140,6 +147,14 @@
 		5AF0B567192B0C0E0004E971 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AF0B566192B0C0E0004E971 /* AddressBook.framework */; };
 		5AF0B56A192B11390004E971 /* GuesstimatePhoneContacts.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AF0B569192B11390004E971 /* GuesstimatePhoneContacts.m */; };
 		5AF0B56D192B17B40004E971 /* GuesstimateEndGameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AF0B56C192B17B40004E971 /* GuesstimateEndGameViewController.m */; };
+		5AF88F331980A59A0069A0E3 /* GuesstimateAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AF88F321980A59A0069A0E3 /* GuesstimateAlertView.m */; };
+		5AF88F371980A8D80069A0E3 /* GuesstimateAlertView+Invite.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AF88F361980A8D80069A0E3 /* GuesstimateAlertView+Invite.m */; };
+		5AF88F3A1980AA3F0069A0E3 /* NSDictionary+GuesstimateAlertViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AF88F391980AA3F0069A0E3 /* NSDictionary+GuesstimateAlertViewDataSource.m */; };
+		5AF88F3D1980ACCD0069A0E3 /* GuesstimateAlertView+PlayerJoin.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AF88F3C1980ACCD0069A0E3 /* GuesstimateAlertView+PlayerJoin.m */; };
+		5AF88F401980AD350069A0E3 /* GuesstimateAlertView+SubmitAnswer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AF88F3F1980AD350069A0E3 /* GuesstimateAlertView+SubmitAnswer.m */; };
+		5AF88F431980AD900069A0E3 /* GuesstimateAlertView+EndGame.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AF88F421980AD900069A0E3 /* GuesstimateAlertView+EndGame.m */; };
+		5AF88F461980B39D0069A0E3 /* GuesstimateAlertViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AF88F451980B39D0069A0E3 /* GuesstimateAlertViewDelegate.m */; };
+		5AF88F4A1980BD590069A0E3 /* GuesstimateMPCHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AF88F491980BD590069A0E3 /* GuesstimateMPCHandler.m */; };
 		DCE7CC73F66C4CCB98E38D03 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F0303EB2021461FBBFBFC24 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -210,6 +225,8 @@
 		5A4FA187190D8A000045BC7A /* GuesstimateApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuesstimateApplication.m; sourceTree = "<group>"; };
 		5A4FA192190D8F280045BC7A /* GuesstimateConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuesstimateConstants.h; sourceTree = "<group>"; };
 		5A4FA193190D8F280045BC7A /* GuesstimateConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuesstimateConstants.m; sourceTree = "<group>"; };
+		5A5872CD197E0A4200A5DBD8 /* GuesstimateEndGamePlayerEntryTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuesstimateEndGamePlayerEntryTableViewCell.h; sourceTree = "<group>"; };
+		5A5872CE197E0A4200A5DBD8 /* GuesstimateEndGamePlayerEntryTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuesstimateEndGamePlayerEntryTableViewCell.m; sourceTree = "<group>"; };
 		5AB9C6591905E13D008D050A /* guesstimate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = guesstimate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5AB9C65C1905E13D008D050A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		5AB9C65E1905E13E008D050A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -241,6 +258,7 @@
 		5AC8D6F41911FACC00E18313 /* test_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test_bg.png; sourceTree = "<group>"; };
 		5AC8D6FC191319A000E18313 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
 		5AC8D6FE19131ED700E18313 /* btn_facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btn_facebook.png; sourceTree = "<group>"; };
+		5ADDE5711980A4880083443E /* GuesstimateAlertDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GuesstimateAlertDataSource.h; sourceTree = "<group>"; };
 		5AE113A91925CA6100C65FE8 /* header_gradient.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = header_gradient.jpg; path = "../../../Downloads/Main Screen Assets/header_gradient.jpg"; sourceTree = "<group>"; };
 		5AE113AA1925CA6100C65FE8 /* header_gradient@2x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "header_gradient@2x.jpg"; path = "../../../Downloads/Main Screen Assets/header_gradient@2x.jpg"; sourceTree = "<group>"; };
 		5AE113AD1925D18C00C65FE8 /* arrow_dropdown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = arrow_dropdown.png; path = "../../../Downloads/Main Screen Assets/arrow_dropdown.png"; sourceTree = "<group>"; };
@@ -257,6 +275,16 @@
 		5AEB504C1914B034002C999D /* GuesstimateTransitionAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuesstimateTransitionAnimator.m; sourceTree = "<group>"; };
 		5AECA97B197607CD008E0B61 /* GuesstimateTicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuesstimateTicker.h; sourceTree = "<group>"; };
 		5AECA97C197607CD008E0B61 /* GuesstimateTicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuesstimateTicker.m; sourceTree = "<group>"; };
+		5AECA97E19761D28008E0B61 /* menu_back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = menu_back.png; sourceTree = "<group>"; };
+		5AECA97F19761D28008E0B61 /* menu_back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "menu_back@2x.png"; sourceTree = "<group>"; };
+		5AECA9821978D34D008E0B61 /* GuesstimateInvitesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuesstimateInvitesViewController.h; sourceTree = "<group>"; };
+		5AECA9831978D34D008E0B61 /* GuesstimateInvitesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuesstimateInvitesViewController.m; sourceTree = "<group>"; };
+		5AECA9851978DABA008E0B61 /* GuesstimateGameInviteTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuesstimateGameInviteTableViewCell.h; sourceTree = "<group>"; };
+		5AECA9861978DABA008E0B61 /* GuesstimateGameInviteTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuesstimateGameInviteTableViewCell.m; sourceTree = "<group>"; };
+		5AECA988197C0F56008E0B61 /* GuesstimateMyGamesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuesstimateMyGamesViewController.h; sourceTree = "<group>"; };
+		5AECA989197C0F56008E0B61 /* GuesstimateMyGamesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuesstimateMyGamesViewController.m; sourceTree = "<group>"; };
+		5AECA98B197CA615008E0B61 /* GuesstimatePlayerEntryTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuesstimatePlayerEntryTableViewCell.h; sourceTree = "<group>"; };
+		5AECA98C197CA615008E0B61 /* GuesstimatePlayerEntryTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuesstimatePlayerEntryTableViewCell.m; sourceTree = "<group>"; };
 		5AF0B4D01925E0640004E971 /* cat_movies.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = cat_movies.jpg; path = "../../../Downloads/Main Screen Assets/cat_movies.jpg"; sourceTree = "<group>"; };
 		5AF0B4D11925E0640004E971 /* cat_movies@2x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "cat_movies@2x.jpg"; path = "../../../Downloads/Main Screen Assets/cat_movies@2x.jpg"; sourceTree = "<group>"; };
 		5AF0B4D41925E59D0004E971 /* cat_geography.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = cat_geography.jpg; path = "../../../Downloads/Main Screen Assets/cat_geography.jpg"; sourceTree = "<group>"; };
@@ -326,6 +354,22 @@
 		5AF0B569192B11390004E971 /* GuesstimatePhoneContacts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuesstimatePhoneContacts.m; sourceTree = "<group>"; };
 		5AF0B56B192B17B40004E971 /* GuesstimateEndGameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuesstimateEndGameViewController.h; sourceTree = "<group>"; };
 		5AF0B56C192B17B40004E971 /* GuesstimateEndGameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuesstimateEndGameViewController.m; sourceTree = "<group>"; };
+		5AF88F311980A59A0069A0E3 /* GuesstimateAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuesstimateAlertView.h; sourceTree = "<group>"; };
+		5AF88F321980A59A0069A0E3 /* GuesstimateAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuesstimateAlertView.m; sourceTree = "<group>"; };
+		5AF88F351980A8D80069A0E3 /* GuesstimateAlertView+Invite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GuesstimateAlertView+Invite.h"; sourceTree = "<group>"; };
+		5AF88F361980A8D80069A0E3 /* GuesstimateAlertView+Invite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GuesstimateAlertView+Invite.m"; sourceTree = "<group>"; };
+		5AF88F381980AA3F0069A0E3 /* NSDictionary+GuesstimateAlertViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+GuesstimateAlertViewDataSource.h"; sourceTree = "<group>"; };
+		5AF88F391980AA3F0069A0E3 /* NSDictionary+GuesstimateAlertViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+GuesstimateAlertViewDataSource.m"; sourceTree = "<group>"; };
+		5AF88F3B1980ACCD0069A0E3 /* GuesstimateAlertView+PlayerJoin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GuesstimateAlertView+PlayerJoin.h"; sourceTree = "<group>"; };
+		5AF88F3C1980ACCD0069A0E3 /* GuesstimateAlertView+PlayerJoin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GuesstimateAlertView+PlayerJoin.m"; sourceTree = "<group>"; };
+		5AF88F3E1980AD350069A0E3 /* GuesstimateAlertView+SubmitAnswer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GuesstimateAlertView+SubmitAnswer.h"; sourceTree = "<group>"; };
+		5AF88F3F1980AD350069A0E3 /* GuesstimateAlertView+SubmitAnswer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GuesstimateAlertView+SubmitAnswer.m"; sourceTree = "<group>"; };
+		5AF88F411980AD900069A0E3 /* GuesstimateAlertView+EndGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GuesstimateAlertView+EndGame.h"; sourceTree = "<group>"; };
+		5AF88F421980AD900069A0E3 /* GuesstimateAlertView+EndGame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GuesstimateAlertView+EndGame.m"; sourceTree = "<group>"; };
+		5AF88F441980B39D0069A0E3 /* GuesstimateAlertViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuesstimateAlertViewDelegate.h; sourceTree = "<group>"; };
+		5AF88F451980B39D0069A0E3 /* GuesstimateAlertViewDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuesstimateAlertViewDelegate.m; sourceTree = "<group>"; };
+		5AF88F481980BD590069A0E3 /* GuesstimateMPCHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuesstimateMPCHandler.h; sourceTree = "<group>"; };
+		5AF88F491980BD590069A0E3 /* GuesstimateMPCHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuesstimateMPCHandler.m; sourceTree = "<group>"; };
 		6F0303EB2021461FBBFBFC24 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		915DD381BCA943E3A300235B /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -381,6 +425,12 @@
 				5AF0B52B192815720004E971 /* GuesstimateMenuTableViewCell.m */,
 				5AF0B563192B02F00004E971 /* GuesstimateFacebookContactTableViewCell.h */,
 				5AF0B564192B02F00004E971 /* GuesstimateFacebookContactTableViewCell.m */,
+				5AECA9851978DABA008E0B61 /* GuesstimateGameInviteTableViewCell.h */,
+				5AECA9861978DABA008E0B61 /* GuesstimateGameInviteTableViewCell.m */,
+				5AECA98B197CA615008E0B61 /* GuesstimatePlayerEntryTableViewCell.h */,
+				5AECA98C197CA615008E0B61 /* GuesstimatePlayerEntryTableViewCell.m */,
+				5A5872CD197E0A4200A5DBD8 /* GuesstimateEndGamePlayerEntryTableViewCell.h */,
+				5A5872CE197E0A4200A5DBD8 /* GuesstimateEndGamePlayerEntryTableViewCell.m */,
 			);
 			name = UIElements;
 			sourceTree = "<group>";
@@ -439,6 +489,7 @@
 		5A4FA185190D89D60045BC7A /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				5AF88F471980BD320069A0E3 /* Alerts */,
 				5A4FA186190D8A000045BC7A /* GuesstimateApplication.h */,
 				5A4FA187190D8A000045BC7A /* GuesstimateApplication.m */,
 				5A4FA192190D8F280045BC7A /* GuesstimateConstants.h */,
@@ -453,10 +504,6 @@
 				5AF0B569192B11390004E971 /* GuesstimatePhoneContacts.m */,
 				5A0179F11932DF1A00F519E5 /* GuesstimatePushNotifications.h */,
 				5A0179F21932DF1A00F519E5 /* GuesstimatePushNotifications.m */,
-				5A0179F41932FA7800F519E5 /* GuesstimatePushHandler.h */,
-				5A0179F51932FA7800F519E5 /* GuesstimatePushHandler.m */,
-				5AECA97B197607CD008E0B61 /* GuesstimateTicker.h */,
-				5AECA97C197607CD008E0B61 /* GuesstimateTicker.m */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -511,6 +558,7 @@
 		5AB9C6641905E13E008D050A /* guesstimate */ = {
 			isa = PBXGroup;
 			children = (
+				5AF88F341980A8B10069A0E3 /* Categories */,
 				5AEB504A1914B011002C999D /* Animation */,
 				5A0D88EB19108E0900E3F000 /* ThirdParty */,
 				5A0D88E1190F3F3800E3F000 /* UIElements */,
@@ -529,6 +577,8 @@
 		5AB9C6651905E13E008D050A /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				5AECA97E19761D28008E0B61 /* menu_back.png */,
+				5AECA97F19761D28008E0B61 /* menu_back@2x.png */,
 				5AF0B559192957070004E971 /* ic_refresh.png */,
 				5AF0B55A192957070004E971 /* ic_refresh@2x.png */,
 				5AF0B53F192945130004E971 /* icon_game.png */,
@@ -643,6 +693,8 @@
 		5AB9C6A91906006A008D050A /* Objects */ = {
 			isa = PBXGroup;
 			children = (
+				5AECA97B197607CD008E0B61 /* GuesstimateTicker.h */,
+				5AECA97C197607CD008E0B61 /* GuesstimateTicker.m */,
 				5AB9C6AA19060090008D050A /* GuesstimateUser.h */,
 				5AB9C6AB19060090008D050A /* GuesstimateUser.m */,
 				5AC8D6EC1910B65400E18313 /* GuesstimateGame.h */,
@@ -677,6 +729,10 @@
 				5AF0B525192801730004E971 /* GuesstimateContactsMenuController.m */,
 				5AF0B527192806CA0004E971 /* GuesstimateAlertsMenuController.h */,
 				5AF0B528192806CA0004E971 /* GuesstimateAlertsMenuController.m */,
+				5AECA9821978D34D008E0B61 /* GuesstimateInvitesViewController.h */,
+				5AECA9831978D34D008E0B61 /* GuesstimateInvitesViewController.m */,
+				5AECA988197C0F56008E0B61 /* GuesstimateMyGamesViewController.h */,
+				5AECA989197C0F56008E0B61 /* GuesstimateMyGamesViewController.m */,
 			);
 			name = Menus;
 			sourceTree = "<group>";
@@ -692,6 +748,39 @@
 				5AF0B5391929404B0004E971 /* GuesstimateManualContactsViewController.m */,
 			);
 			name = ContactsFlow;
+			sourceTree = "<group>";
+		};
+		5AF88F341980A8B10069A0E3 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				5AF88F351980A8D80069A0E3 /* GuesstimateAlertView+Invite.h */,
+				5AF88F361980A8D80069A0E3 /* GuesstimateAlertView+Invite.m */,
+				5AF88F381980AA3F0069A0E3 /* NSDictionary+GuesstimateAlertViewDataSource.h */,
+				5AF88F391980AA3F0069A0E3 /* NSDictionary+GuesstimateAlertViewDataSource.m */,
+				5AF88F3B1980ACCD0069A0E3 /* GuesstimateAlertView+PlayerJoin.h */,
+				5AF88F3C1980ACCD0069A0E3 /* GuesstimateAlertView+PlayerJoin.m */,
+				5AF88F3E1980AD350069A0E3 /* GuesstimateAlertView+SubmitAnswer.h */,
+				5AF88F3F1980AD350069A0E3 /* GuesstimateAlertView+SubmitAnswer.m */,
+				5AF88F411980AD900069A0E3 /* GuesstimateAlertView+EndGame.h */,
+				5AF88F421980AD900069A0E3 /* GuesstimateAlertView+EndGame.m */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
+		5AF88F471980BD320069A0E3 /* Alerts */ = {
+			isa = PBXGroup;
+			children = (
+				5A0179F41932FA7800F519E5 /* GuesstimatePushHandler.h */,
+				5A0179F51932FA7800F519E5 /* GuesstimatePushHandler.m */,
+				5ADDE5711980A4880083443E /* GuesstimateAlertDataSource.h */,
+				5AF88F311980A59A0069A0E3 /* GuesstimateAlertView.h */,
+				5AF88F321980A59A0069A0E3 /* GuesstimateAlertView.m */,
+				5AF88F441980B39D0069A0E3 /* GuesstimateAlertViewDelegate.h */,
+				5AF88F451980B39D0069A0E3 /* GuesstimateAlertViewDelegate.m */,
+				5AF88F481980BD590069A0E3 /* GuesstimateMPCHandler.h */,
+				5AF88F491980BD590069A0E3 /* GuesstimateMPCHandler.m */,
+			);
+			name = Alerts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -792,6 +881,7 @@
 				5AF0B4F21925E85B0004E971 /* cat_animals.jpg in Resources */,
 				5AB9C6691905E13E008D050A /* InfoPlist.strings in Resources */,
 				5AF0B549192945130004E971 /* icon_game.png in Resources */,
+				5AECA98019761D28008E0B61 /* menu_back.png in Resources */,
 				5A3446461925C8D1004F1DD3 /* ic_friends.png in Resources */,
 				5AF0B4D21925E0640004E971 /* cat_movies.jpg in Resources */,
 				5AF0B50A1927CB7E0004E971 /* ic_lock.png in Resources */,
@@ -824,6 +914,7 @@
 				5AE113BD1925D18C00C65FE8 /* btn_arrowright_press.png in Resources */,
 				5AE113BA1925D18C00C65FE8 /* btn_arrowleft_press@2x.png in Resources */,
 				5AE113B81925D18C00C65FE8 /* arrow_dropdown@2x.png in Resources */,
+				5AECA98119761D28008E0B61 /* menu_back@2x.png in Resources */,
 				5AF0B4E01925E59D0004E971 /* cat_history.jpg in Resources */,
 				5AF0B54B192945130004E971 /* icon_invite.png in Resources */,
 				5AF0B54A192945130004E971 /* icon_game@2x.png in Resources */,
@@ -898,6 +989,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5AF88F3D1980ACCD0069A0E3 /* GuesstimateAlertView+PlayerJoin.m in Sources */,
 				5AB9C6721905E13E008D050A /* guesstimate.xcdatamodeld in Sources */,
 				5A0D88DA190DFA1500E3F000 /* GuesstimateLoginViewController.m in Sources */,
 				5A34461919246041004F1DD3 /* GuesstimateContact.m in Sources */,
@@ -907,11 +999,16 @@
 				5A34462F1924736B004F1DD3 /* GuesstimateFacebookLibrary.m in Sources */,
 				5AECA97D197607CD008E0B61 /* GuesstimateTicker.m in Sources */,
 				5AF0B56A192B11390004E971 /* GuesstimatePhoneContacts.m in Sources */,
+				5A5872CF197E0A4200A5DBD8 /* GuesstimateEndGamePlayerEntryTableViewCell.m in Sources */,
 				5AF0B51E192800E30004E971 /* GuesstimateQuestionSelectViewController.m in Sources */,
+				5AF88F3A1980AA3F0069A0E3 /* NSDictionary+GuesstimateAlertViewDataSource.m in Sources */,
 				5AEB504D1914B034002C999D /* GuesstimateTransitionAnimator.m in Sources */,
+				5AF88F461980B39D0069A0E3 /* GuesstimateAlertViewDelegate.m in Sources */,
 				5A344632192596AA004F1DD3 /* GuesstimateInvite.m in Sources */,
 				5A0179F61932FA7800F519E5 /* GuesstimatePushHandler.m in Sources */,
 				5A34462619246A9C004F1DD3 /* GuesstimateInviteTableViewCell.m in Sources */,
+				5AF88F4A1980BD590069A0E3 /* GuesstimateMPCHandler.m in Sources */,
+				5AECA9871978DABA008E0B61 /* GuesstimateGameInviteTableViewCell.m in Sources */,
 				5AF0B53A1929404B0004E971 /* GuesstimateManualContactsViewController.m in Sources */,
 				5A4FA188190D8A000045BC7A /* GuesstimateApplication.m in Sources */,
 				5A34461C1924634B004F1DD3 /* GuesstimateInviteViewController.m in Sources */,
@@ -920,22 +1017,29 @@
 				5A3446131921CC7B004F1DD3 /* GuesstimateCategory.m in Sources */,
 				5A0D88D7190DBD2900E3F000 /* GuesttimateRegistrationViewController.m in Sources */,
 				5AB9C66B1905E13E008D050A /* main.m in Sources */,
+				5AF88F371980A8D80069A0E3 /* GuesstimateAlertView+Invite.m in Sources */,
 				5AF0B529192806CA0004E971 /* GuesstimateAlertsMenuController.m in Sources */,
 				5AF0B522192801270004E971 /* GuesstimateBaseMenuController.m in Sources */,
+				5AECA98D197CA615008E0B61 /* GuesstimatePlayerEntryTableViewCell.m in Sources */,
 				5A0D88E4190F3F5600E3F000 /* GuesstimateCategoryTableViewCell.m in Sources */,
 				5AB9C6AC19060090008D050A /* GuesstimateUser.m in Sources */,
 				5AF0B526192801730004E971 /* GuesstimateContactsMenuController.m in Sources */,
 				5AF0B537192940310004E971 /* GuesstimatePhoneContactsViewController.m in Sources */,
 				5A0179F31932DF1A00F519E5 /* GuesstimatePushNotifications.m in Sources */,
+				5AF88F401980AD350069A0E3 /* GuesstimateAlertView+SubmitAnswer.m in Sources */,
 				5A0D88EE19108E3200E3F000 /* MBProgressHUD.m in Sources */,
 				5AF0B565192B02F00004E971 /* GuesstimateFacebookContactTableViewCell.m in Sources */,
+				5AECA98A197C0F56008E0B61 /* GuesstimateMyGamesViewController.m in Sources */,
 				5AF0B52C192815720004E971 /* GuesstimateMenuTableViewCell.m in Sources */,
 				5AB9C6971905E5EA008D050A /* GuesstimateWelcomeViewController.m in Sources */,
 				5AF0B56D192B17B40004E971 /* GuesstimateEndGameViewController.m in Sources */,
 				5A34462C19246E3E004F1DD3 /* GuesstimateFacebookInviteSource.m in Sources */,
+				5AECA9841978D34D008E0B61 /* GuesstimateInvitesViewController.m in Sources */,
 				5AC8D6EE1910B65400E18313 /* GuesstimateGame.m in Sources */,
 				5AB9C6B2190605E6008D050A /* GuesstimateBaseViewController.m in Sources */,
 				5A3446161921CD7F004F1DD3 /* GuesstimateQuestion.m in Sources */,
+				5AF88F331980A59A0069A0E3 /* GuesstimateAlertView.m in Sources */,
+				5AF88F431980AD900069A0E3 /* GuesstimateAlertView+EndGame.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

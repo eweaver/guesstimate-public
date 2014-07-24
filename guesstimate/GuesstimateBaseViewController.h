@@ -44,7 +44,9 @@
 - (void)setBackButton;
 - (void)pushMenuItemToRightStack:(UIView *)view imageName:(NSString *)imageName gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer;
 
--(void)logoutAuthUser;
+- (void)logoutAuthUser;
+
+- (void) updateAlertBadgeCount;
 
 - (void)pushSelectionViewController:(GuesstimateBaseViewController *)viewController;
 

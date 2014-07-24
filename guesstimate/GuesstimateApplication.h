@@ -8,11 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import "MBProgressHUD.h"
+#import "GuesstimateAlertView.h"
 
 @interface GuesstimateApplication : NSObject
 
 @property (assign, nonatomic) BOOL hasDelayedPush;
-@property (strong, nonatomic) NSDictionary *pushData;
+@property (strong, nonatomic) GuesstimateAlertView *pushView;
 
 + (id)sharedApp;
 + (UIAlertView *)getErrorAlert:(NSString *)msg;

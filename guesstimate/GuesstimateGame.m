@@ -51,11 +51,18 @@
     if(hasQuestion) {
         game.questionText = [question objectForKey:@"text"];
         game.answer = [question objectForKey:@"answer"];
+        game.answerFormatted = [question objectForKey:@"displayAnswer"];
         game.category = [[GuesstimateCategory alloc] initWithId:category.objectId withTitle:[category objectForKey:@"title"] withBgImage:[category objectForKey:@"bg_image"] isLocked:[[category objectForKey:@"isLocked"] boolValue]];
     } else {
         game.questionText = @"";
         game.answer = nil;
-        game.category= nil;
+        game.answerFormatted = nil;
+        
+        if(category) {
+            game.category = [[GuesstimateCategory alloc] initWithId:category.objectId withTitle:[category objectForKey:@"title"] withBgImage:[category objectForKey:@"bg_image"] isLocked:[[category objectForKey:@"isLocked"] boolValue]];
+        } else {
+            game.category= nil;
+        }
     }
     
     game.date = [gameObject objectForKey:@"expiresAt"];
@@ -86,6 +93,40 @@
         [query whereKey:@"userId" equalTo:userObject];
         [query whereKey:@"expiresAt" greaterThan:now];
         [query includeKey:@"gameId"];
+        [query includeKey:@"gameId.categoryId"];
+        [query orderByDescending:@"createdAt"];
+        
+        [query findObjectsInBackgroundWithBlock:^(NSArray *guessObjects, NSError *error) {
+            NSMutableArray *games = [NSMutableArray arrayWithCapacity:guessObjects.count];
+            
+            for(PFObject *guessObject in guessObjects) {
+                [games addObject:[self initGame:[guessObject objectForKey:@"gameId"] hasQuestion:NO]];
+            }
+            
+            onComplete(games, error);
+        }];
+    }
+}
+
++(void)getMyExpiredGames:(void (^)(NSArray *games, NSError *error))onComplete {
+    GuesstimateUser *user = [GuesstimateUser getAuthUser];
+    
+    if(!user) {
+        NSDictionary *errorDictionary = @{ @"error": @"No session user to load games for."};
+        NSError* error = [[NSError alloc] initWithDomain:@"com.firststep.guesstimate.UserError" code:1 userInfo:errorDictionary];
+        onComplete(nil, error);
+    } else {
+        PFQuery *query = [PFQuery queryWithClassName:@"Guess"];
+        PFUser *userObject = [PFUser user];
+        userObject.objectId = user.objectId;
+        
+        NSDate *now = [NSDate date];
+        
+        [query whereKey:@"userId" equalTo:userObject];
+        [query whereKey:@"expiresAt" lessThan:now];
+        [query includeKey:@"gameId"];
+        [query includeKey:@"gameId.categoryId"];
+        [query orderByDescending:@"createdAt"];
         
         [query findObjectsInBackgroundWithBlock:^(NSArray *guessObjects, NSError *error) {
             NSMutableArray *games = [NSMutableArray arrayWithCapacity:guessObjects.count];
@@ -109,7 +150,7 @@
     
     // Set expire for one hour for now
     NSDate *date = [NSDate date];
-    NSDate *expiresAt = [date dateByAddingTimeInterval:60*60*1];
+    NSDate *expiresAt = [date dateByAddingTimeInterval:86400];
 
     PFObject *gameObject = [PFObject objectWithClassName:@"Game"];
     gameObject[@"categoryId"] = category;
@@ -121,14 +162,9 @@
     
     [gameObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if(succeeded == YES) {
-            //[GuesstimatePushNotifications setInstallationToCurrentUser:[[GuesstimateUser getAuthUser] objectId]];
             GuesstimateGame *game = [GuesstimateGame initGame:gameObject.objectId withCategory:categoryId withQuestion:questionId];
             onComplete(game, error);
             [game addUser:creatorId expiresAt:expiresAt];
-            /*NSArray *pushMapping = @[creatorId];
-            [GuesstimatePushNotifications joinPushChannel:[NSString stringWithFormat:@"%@-game", gameObject.objectId] withUsers:pushMapping onCompleteBlock:^(BOOL succeeded, NSError *error) {
-                //noop
-            }];*/
         } else {
             onComplete(nil, error);
         }
@@ -196,7 +232,10 @@
                                             @"guess":guessString,
                                             @"diff":diffString};
             
-                [self.guesses setObject:[[guess objectForKey:@"userId"] objectId] forKey:guessData];
+                NSString *userId = [[guess objectForKey:@"userId"] objectId];
+                NSMutableDictionary *newGuesses = [self.guesses mutableCopy];
+                [newGuesses setObject:guessData forKey:userId];
+                self.guesses = newGuesses;
             }
             
             onComplete(YES, error);
@@ -221,7 +260,7 @@
             NSDate *date = [NSDate date];
             NSDate *expiresAt = [date dateByAddingTimeInterval:60*60*1];
 
-            [GuesstimatePushNotifications sendPushToUsers:otherPlayers type:@"submitAnswer" message:@"An answer has been submitted" pushData:pushData expiresAt:expiresAt];
+            [GuesstimatePushNotifications sendPushToUsers:otherPlayers type:@"submitAnswer" message:[NSString stringWithFormat:@"%@ has submitted a guess!", user.name] pushData:pushData expiresAt:expiresAt];
         }
         onComplete(succeeded, error);
     }];
@@ -247,9 +286,8 @@
 - (NSArray *) getPlayerIds {
     NSMutableArray *otherPlayers = [[NSMutableArray alloc] init];
     
-    for(NSDictionary *guess in self.guesses) {
-        GuesstimateUser *otherUser = [guess objectForKey:@"userId"];
-        [otherPlayers addObject:otherUser.objectId];
+    for(NSDictionary *userId in self.guesses) {
+        [otherPlayers addObject:userId];
     }
     
     return [NSArray arrayWithArray:otherPlayers];
@@ -260,10 +298,9 @@
     GuesstimateUser *user = [GuesstimateUser getAuthUser];
     NSMutableArray *otherPlayers = [[NSMutableArray alloc] init];
     
-    for(NSDictionary *guess in self.guesses) {
-        GuesstimateUser *otherUser = [guess objectForKey:@"userId"];
-        if(![otherUser.objectId isEqual:user.objectId]) {
-            [otherPlayers addObject:otherUser.objectId];
+    for(NSDictionary *userId in self.guesses) {
+        if(![userId isEqual:user.objectId]) {
+            [otherPlayers addObject:userId];
         }
     }
     
@@ -282,7 +319,8 @@
     
     NSMutableArray *tmpScores = [[NSMutableArray alloc] initWithCapacity:self.guesses.count];
     
-    for(NSDictionary *guessData in self.guesses) {
+    for(NSString *userId in self.guesses) {
+        NSDictionary *guessData = [self.guesses objectForKey:userId];
         GuesstimateUser *user = [guessData objectForKey:@"userId"];
         NSNumber *diff = nil;
         

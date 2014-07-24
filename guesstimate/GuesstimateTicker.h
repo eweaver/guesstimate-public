@@ -10,4 +10,7 @@
 
 @interface GuesstimateTicker : NSObject
 
+- (instancetype) initWithText:(NSString *)text duration:(CGFloat)duration rootView:(UIView *)rootView;
+- (void) displayBottomTicker;
+
 @end

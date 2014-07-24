@@ -8,7 +8,7 @@
 
 #import "GuesstimateBaseViewController.h"
 
-@interface GuesstimatePlayGameViewController : GuesstimateBaseViewController <UITextFieldDelegate>
+@interface GuesstimatePlayGameViewController : GuesstimateBaseViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) NSString *gameId;
 @property (strong, nonatomic) NSDictionary *gameData;
@@ -21,7 +21,9 @@
 
 @property (strong, nonatomic) UIImageView *categoryBgImage;
 
+-(void)refreshGameAddPlayer;
 -(void)silentRefreshGame;
+-(void)silentRefreshGame:(NSString *)guessOwner;
 -(void)refreshGame;
 
 @end

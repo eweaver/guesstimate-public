@@ -10,10 +10,15 @@
 #import "GuesstimateQuestionSelectViewController.h"
 #import "GuesstimateEndGameViewController.h"
 #import "GuesstimateGame.h"
+#import "GuesstimatePlayerEntryTableViewCell.h"
 
 @interface GuesstimatePlayGameViewController ()
 
 @property (strong, nonatomic) GuesstimateGame *game;
+@property (strong, nonatomic) UITableView *playersTable;
+@property (strong, nonatomic) NSMutableArray *players;
+@property (assign, nonatomic) NSInteger authUserCellIndex;
+@property (assign, nonatomic) BOOL gameIsComplete;
 
 @end
 
@@ -23,7 +28,8 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
+        _players = [[NSMutableArray alloc] init];
+        _gameIsComplete = NO;
     }
     return self;
 }
@@ -79,7 +85,7 @@
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboardWithTap:)];
     [self.view addGestureRecognizer:tap];
 
-    [self addMenuItemsStackedRight:self.navigationController.navigationBar];
+    //[self addMenuItemsStackedRight:self.navigationController.navigationBar];
     UITapGestureRecognizer *refreshGame = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(refreshGame)];
     [self pushMenuItemToRightStack:self.navigationController.navigationBar imageName:@"ic_refresh.png" gestureRecognizer:refreshGame];
 }
@@ -87,7 +93,15 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
+    NSInteger height = [UIScreen mainScreen].bounds.size.height - 137 - 186;
+    self.playersTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 134, self.view.frame.size.width, height)];
+    self.playersTable.bounces = YES;
+    self.playersTable.scrollEnabled = YES;
+    self.playersTable.rowHeight = 40;
+    self.playersTable.dataSource = self;
+    self.playersTable.delegate = self;
+    
     [self startGame];
 }
 
@@ -106,45 +120,87 @@
     [GuesstimateApplication displayWaiting:self.view withText:@"" withSubtext:@"Submitting answer..."];
     
     GuesstimateUser *authUser = [GuesstimateUser getAuthUser];
-    NSDictionary *playerMetadata = [self.answers objectForKey:authUser.objectId];
+    NSDictionary *guessData = [self.game.guesses objectForKey:authUser.objectId];
     
-    [self.game submitGuess:[playerMetadata objectForKey:@"guessId"] guess:guess onCompleteBlock:^(BOOL succeeded, NSError *error) {
+    [self.game submitGuess:[guessData objectForKey:@"guessId"] guess:guess onCompleteBlock:^(BOOL succeeded, NSError *error) {
         [GuesstimateApplication hideWaiting:self.view];
         if(succeeded) {
-            NSInteger tag = [[playerMetadata objectForKey:@"tag"] integerValue];
-            UILabel *playerAnswer = (UILabel *) [self.view viewWithTag:tag];
-            playerAnswer.text = [guess stringValue];
+            // [guess stringValue]
+            NSMutableDictionary *guesses = [self.game.guesses mutableCopy];
+            NSMutableDictionary *guessData = [[guesses objectForKey:authUser.objectId] mutableCopy];
+            [guessData setObject:[guess stringValue] forKey:@"guess"];
+            [guesses setObject:guessData forKey:authUser.objectId];
+            self.game.guesses = [guesses copy];
+
+            [self.playersTable reloadData];
+            [self.playersTable setNeedsDisplay];
             
             [self endGameForLocalPlayer];
-            [self silentRefreshGame];
+            if([self hasGameEnded] == YES) {
+                [self displayEndGame];
+            }
         } else {
             [[GuesstimateApplication getErrorAlert:[error userInfo][@"error"]] show];
         }
     }];
+}
+
+-(BOOL)hasGameEnded {
+    BOOL hasEnded = YES;
+    for(NSString *userId in self.game.guesses) {
+        NSDictionary *guessData = [self.game.guesses objectForKey:userId];
+        NSString *guessString = [guessData objectForKey:@"guess"];
+
+        if([guessString isEqualToString:@"N/A"]) {
+            hasEnded = NO;
+            break;
+        }
+    }
+
+    return hasEnded;
 }
 
 -(void)silentRefreshGame {
     [GuesstimateGame getGameData:self.gameId onCompleteBlock:^(GuesstimateGame *game, NSError *error) {
         if(game) {
-            [game loadGameGuesses:^(BOOL succeeded, NSError *error) {
-                [GuesstimateApplication hideWaiting:self.view];
-                [self updatePlayers];
+            [self.game loadGameGuesses:^(BOOL succeeded, NSError *error) {
+                self.players = [[NSMutableArray alloc] init];
+                for(NSString *userId in self.game.guesses) {
+                    [self.players addObject:userId];
+                }
+                
+                [self.playersTable reloadData];
+                [self.playersTable setNeedsDisplay];
+                
+                if([self hasGameEnded] == YES) {
+                    [self displayEndGame];
+                }
             }];
+            
         } else {
             [[GuesstimateApplication getErrorAlert:[error userInfo][@"error"]] show];
         }
     }];
+
+}
+
+-(void)refreshGameAddPlayer {
+    [self silentRefreshGame];
+}
+
+-(void)silentRefreshGame:(NSString *)guessOwner {
+    [self silentRefreshGame];
 }
 
 -(void)refreshGame {
-    // Put more logic in to reduce reloading the entire game.
-    // Really only need to reload players list & guesses
-    //self.questionLabel.text = @"loading...";
-    [self removePlayers];
-    [self startGame];
+    [self silentRefreshGame];
 }
 
 -(void)startGame {
+    [self startGame:YES];
+}
+
+-(void)startGame:(BOOL)initialLoad {
     [GuesstimateApplication displayWaiting:self.view withText:@"Loading game..."];
     [GuesstimateGame getGameData:self.gameId onCompleteBlock:^(GuesstimateGame *game, NSError *error) {
         if(game) {
@@ -160,146 +216,33 @@
                                     [self.view sendSubviewToBack:self.categoryBgImage];
                                 } completion:nil];
             }
-
+            
             
             self.game = game;
             self.questionLabel.text = game.questionText;
             
             [self.game loadGameGuesses:^(BOOL succeeded, NSError *error) {
+                self.players = [[NSMutableArray alloc] init];
+                for(NSString *userId in self.game.guesses) {
+                    [self.players addObject:userId];
+                }
+                
                 [GuesstimateApplication hideWaiting:self.view];
-                [self displayPlayers];
+                
+                if(initialLoad == YES) {
+                    [self.view addSubview:self.playersTable];
+                } else {
+                    [self.playersTable reloadData];
+                    [self.playersTable setNeedsDisplay];
+                    if([self hasGameEnded] == YES) {
+                        [self displayEndGame];
+                    }
+                }
             }];
         } else {
             [[GuesstimateApplication getErrorAlert:[error userInfo][@"error"]] show];
         }
     }];
-}
-
--(void)removePlayers {
-    [self.playersList removeFromSuperview];
-    self.playersList = nil;
-}
-
--(void)updatePlayers {
-    GuesstimateUser *authUser = [GuesstimateUser getAuthUser];
-    BOOL gameIsComplete = YES;
-    NSInteger counter = 1;
-    double smallestDiff = -1;
-    NSString *winnerId;
-    
-    for(NSDictionary *guessData in self.game.guesses) {
-        GuesstimateUser *user = [guessData objectForKey:@"userId"];
-        NSNumber *diff = nil;
-        
-        NSString *guessString = [guessData objectForKey:@"guess"];
-        NSString *revealedGuess = guessString;
-        NSString *name;
-        if([authUser.objectId isEqual:user.objectId]) {
-            name = @"me";
-            if(! [guessString isEqualToString:@"N/A"]) {
-                [self endGameForLocalPlayer];
-                
-                diff = [NSNumber numberWithDouble:[[guessData objectForKey:@"diff"] doubleValue]];
-            } else {
-                gameIsComplete = NO;
-            }
-        } else {
-            name = user.name;
-            if(! [guessString isEqualToString:@"N/A"]) {
-                guessString = @"???";
-                diff = [NSNumber numberWithDouble:[[guessData objectForKey:@"diff"] doubleValue]];
-            } else {
-                gameIsComplete = NO;
-            }
-        }
-        
-        if(smallestDiff == -1 || smallestDiff > [diff doubleValue]) {
-            smallestDiff = [diff doubleValue];
-            winnerId = user.objectId;
-        }
-        
-        NSInteger tag = 400 + counter;
-        NSString *tagId = [NSString stringWithFormat: @"%d", (NSInteger)tag];
-        
-        NSDictionary *playerMetadata = [[NSDictionary alloc] initWithObjectsAndKeys:
-                                        tagId, @"tag",
-                                        guessString, @"answer",
-                                        revealedGuess, @"revealed",
-                                        [guessData objectForKey:@"guessId"], @"guessId",
-                                        nil];
-        
-        [self.answers setObject:playerMetadata forKey:user.objectId];
-        
-        counter++;
-    }
-    
-    if(gameIsComplete == YES) {
-        [self displayEndGame:winnerId];
-    }
-}
-
--(void)displayPlayers {
-    self.playersList = [[UIView alloc] init];
-    NSInteger counter = 1;
-    self.answers = [[NSMutableDictionary alloc] initWithCapacity:[self.game.guesses count]];
-    GuesstimateUser *authUser = [GuesstimateUser getAuthUser];
-    BOOL gameIsComplete = YES;
-    double smallestDiff = -1;
-    NSString *winnerId;
-
-    for(NSDictionary *guessData in self.game.guesses) {
-        GuesstimateUser *user = [guessData objectForKey:@"userId"];
-        NSNumber *diff = nil;
-        
-        NSString *guessString = [guessData objectForKey:@"guess"];
-        NSString *revealedGuess = guessString;
-        NSString *name;
-        if([authUser.objectId isEqual:user.objectId]) {
-            name = @"me";
-            if(! [guessString isEqualToString:@"N/A"]) {
-                [self endGameForLocalPlayer];
-                
-                 diff = [NSNumber numberWithDouble:[[guessData objectForKey:@"diff"] doubleValue]];
-            } else {
-                gameIsComplete = NO;
-            }
-        } else {
-            name = user.name;
-            if(! [guessString isEqualToString:@"N/A"]) {
-                guessString = @"???";
-                diff = [NSNumber numberWithDouble:[[guessData objectForKey:@"diff"] doubleValue]];
-            } else {
-                gameIsComplete = NO;
-            }
-        }
-        
-        if(smallestDiff == -1 || smallestDiff > [diff doubleValue]) {
-            smallestDiff = [diff doubleValue];
-            winnerId = user.objectId;
-        }
-        
-        UIView *playerView = [self createPlayerView:counter name:name guess:guessString];
-        NSInteger tag = 400 + counter;
-        NSString *tagId = [NSString stringWithFormat: @"%d", (NSInteger)tag];
-        [self.playersList addSubview:playerView];
-        
-        NSDictionary *playerMetadata = [[NSDictionary alloc] initWithObjectsAndKeys:
-                                        tagId, @"tag",
-                                        guessString, @"answer",
-                                        revealedGuess, @"revealed",
-                                        [guessData objectForKey:@"guessId"], @"guessId",
-                                        nil];
-        
-        [self.answers setObject:playerMetadata forKey:user.objectId];
-        
-        counter++;
-    }
-    
-    if(gameIsComplete == YES) {
-        [self displayEndGame:winnerId];
-    }
-    
-    [self.view addSubview:self.playersList];
 }
 
 -(void)endGameForLocalPlayer {
@@ -314,6 +257,18 @@
     [self.view addSubview:self.endGame];
 }
 
+-(void)displayEndGame {
+    GuesstimateUser *user;
+    [self.game scoreGame];
+    NSArray *scores = [self.game getGameScoresInOrder];
+
+    for(NSDictionary *playerData in scores) {
+        user = [playerData objectForKey:@"user"];
+        break;
+    }
+
+    [self displayEndGame:user.objectId];
+}
 
 -(void)displayEndGame:(NSString *)winner {
     if(self.game.isComplete == NO) {
@@ -327,39 +282,6 @@
 }
 
 #pragma UI/display
-
--(UIView *)createPlayerView:(NSInteger) offset name:(NSString *)name guess:(NSString *)guess {
-    UIView *view = [[UIView alloc] init];
-    
-    CGRect boxFrame = view.frame;
-    boxFrame.size.width = self.view.frame.size.width;
-    boxFrame.size.height = 40;
-    int boxOffset = (int) (offset * 42) + 94;
-    view.frame = CGRectOffset(boxFrame, 0, boxOffset);
-    [view setBackgroundColor:[UIColor colorWithRed:0.9 green:0.6 blue:0.08 alpha:0.7]];
-    
-    UIImageView *contactPhoto = [[UIImageView alloc] initWithFrame:CGRectMake(2, 2, 36, 36)];
-    contactPhoto.image = [GuesstimateUser getDefaultPhoto];
-    [view addSubview:contactPhoto];
-    
-    UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(46, 0, view.frame.size.width - 110, view.frame.size.height)];
-    nameLabel.text = name;
-    [nameLabel setFont:[UIFont fontWithName: @"HelveticaNeue-Light" size: 16.0f]];
-    [nameLabel setTextColor:[UIColor whiteColor]];
-    [nameLabel setBackgroundColor:[UIColor clearColor]];
-    [view addSubview:nameLabel];
-    
-    UILabel *answerLabel = [[UILabel alloc] initWithFrame:CGRectMake(view.frame.size.width - 100, 0, 100, view.frame.size.height)];
-    answerLabel.text = guess;
-    [answerLabel setFont:[UIFont fontWithName: @"HelveticaNeue-Light" size: 14.0f]];
-    [answerLabel setTextColor:[UIColor whiteColor]];
-    [answerLabel setBackgroundColor:[UIColor clearColor]];
-    answerLabel.tag = 400 + offset;
-    
-    [view addSubview:answerLabel];
-    
-    return view;
-}
 
 -(UITextField *)addTextField:(NSString *)text placeholder:(NSString *)placeholder offset:(NSInteger) offset secure:(BOOL)secure {
     UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - offset - 60, 320, 60)];
@@ -423,6 +345,57 @@
     
     [self textFieldsDidBecomeInactive];
 }
+
+#pragma mark table view
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return self.players.count;
+}
+
+#pragma mark table view
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    GuesstimatePlayerEntryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PlayerEntryCell"];
+    
+    if(cell == nil) {
+        cell = [[GuesstimatePlayerEntryTableViewCell alloc] init];
+    }
+    
+    NSString *userId = [self.players objectAtIndex:indexPath.row];
+    GuesstimateUser *authUser = [GuesstimateUser getAuthUser];
+    NSDictionary *guessData = [self.game.guesses objectForKey:userId];
+    GuesstimateUser *user = [guessData objectForKey:@"userId"];
+
+    NSString *guessString = [guessData objectForKey:@"guess"];
+    
+    if([user.objectId isEqualToString:authUser.objectId]) {
+        self.authUserCellIndex = indexPath.row;
+        cell.playerName.text = @"me";
+        if([guessString isEqualToString:@"N/A"]) {
+            cell.playerGuess.text = @"N/A";
+        } else {
+            cell.playerGuess.text = guessString;
+        }
+    } else {
+        cell.playerName.text = user.name;
+        if([guessString isEqualToString:@"N/A"]) {
+            cell.playerGuess.text = @"N/A";
+        } else {
+            cell.playerGuess.text = @"???";
+        }
+    }
+    
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+
+}
+
 
 - (void)didReceiveMemoryWarning
 {

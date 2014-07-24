@@ -77,6 +77,7 @@
     textField.returnKeyType = UIReturnKeyDone;
     textField.clearButtonMode = UITextFieldViewModeWhileEditing;
     textField.keyboardAppearance = UIKeyboardAppearanceDark;
+    textField.keyboardType = UIKeyboardTypeAlphabet;
     textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     if(secure == YES) {
         textField.secureTextEntry = YES;

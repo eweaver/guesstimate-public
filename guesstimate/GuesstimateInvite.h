@@ -26,6 +26,7 @@
 +(void)sendInvites:(NSString *)gameId users:(NSArray *)invitedUsers onCompleteBlock:(void (^)(BOOL succeeded, NSError *error))onComplete;
 
 +(void)getMyInvites:(void (^)(NSArray *invites, NSError *error))onComplete;
++(void)getMyInvitesCount:(void (^)(NSInteger count, NSError *error))onComplete;
 
 -(void)acceptInvite:(void (^)(BOOL succeeded, NSError *error))onComplete;
 

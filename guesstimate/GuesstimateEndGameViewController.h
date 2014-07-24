@@ -8,7 +8,7 @@
 
 #import "GuesstimateBaseViewController.h"
 
-@interface GuesstimateEndGameViewController : GuesstimateBaseViewController
+@interface GuesstimateEndGameViewController : GuesstimateBaseViewController <UITableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) NSString *gameId;
 @property (strong, nonatomic) UIImageView *categoryBgImage;

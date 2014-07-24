@@ -112,8 +112,7 @@
     [push setData:data];
     [push expireAtDate:expiresAt];
     [push sendPushInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        
-        NSLog(@"%@", error);
+
     }];
 }
 

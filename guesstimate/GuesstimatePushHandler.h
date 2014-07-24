@@ -8,11 +8,14 @@
 
 #import <Foundation/Foundation.h>
 #import "GuesstimateUser.h"
+#import "GuesstimateAlertDataSource.h"
+#import "GuesstimateAlertView.h"
 
-@interface GuesstimatePushHandler : NSObject <UIAlertViewDelegate>
+@interface GuesstimatePushHandler : NSObject <GuesstimateAlertDataSource>
 
 @property (strong, nonatomic) GuesstimateUser *authUser;
 
+-(void)handlePushView:(GuesstimateAlertView *)alertView;
 -(void)handlePush:(NSDictionary *)userInfo;
 
 @end

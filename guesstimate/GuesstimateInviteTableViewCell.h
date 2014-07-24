@@ -10,7 +10,11 @@
 
 @interface GuesstimateInviteTableViewCell : UITableViewCell
 
-@property (nonatomic, strong) UILabel *nameLabel;
-@property (strong, nonatomic) UIImageView *photoView;
+@property (strong, nonatomic) UIImageView *categoryImage;
+@property (strong, nonatomic) UILabel *nameLabel;
+@property (strong, nonatomic) UILabel *questionLabel;
+@property (strong, nonatomic) UILabel *createdAtLabel;
+@property (strong, nonatomic) UILabel *otherPlayersLabel;
+@property (strong, nonatomic) UILabel *statusLabel;
 
 @end

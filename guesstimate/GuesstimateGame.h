@@ -20,7 +20,9 @@
 @property (strong, nonatomic) NSString *questionId;
 @property (strong, nonatomic) NSString *questionText;
 @property (strong, nonatomic) NSNumber *answer;
+@property (strong, nonatomic) NSString *answerFormatted;
 @property (strong, nonatomic) NSString *winnerId;
+@property (strong, nonatomic) NSString *loserId;
 @property (strong, nonatomic) NSDate *date;
 @property (strong, nonatomic) NSMutableDictionary *guesses;
 @property (assign, nonatomic) BOOL isComplete;
@@ -28,6 +30,7 @@
 
 #pragma mark collections
 +(void)getMyGames:(void (^)(NSArray *games, NSError *error))onComplete;
++(void)getMyExpiredGames:(void (^)(NSArray *games, NSError *error))onComplete;
 
 #pragma mark create
 +(void)createGame:(NSString *)categoryId withQuestion:(NSString *)questionId creator:(NSString *)creatorId preview:(NSString *)preview onCompleteBlock:(void (^)(GuesstimateGame *game, NSError *error))onComplete;

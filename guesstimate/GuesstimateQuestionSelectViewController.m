@@ -14,10 +14,12 @@
 #import "GuesstimateCategory.h"
 #import "GuesstimateQuestion.h"
 #import "GuesstimateCategoryTableViewCell.h"
+#import "GuesstimateTicker.h"
 
 @interface GuesstimateQuestionSelectViewController ()
 
 @property (assign, nonatomic) BOOL isCategoryListExpanded;
+@property (strong, nonatomic) GuesstimateAlertViewDelegate *alertDelegate;
 
 @end
 
@@ -111,7 +113,7 @@ NSInteger maxQuestionPosition = 0;
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+    [self updateAlertBadgeCount];
     [self checkForDelayedPush];
 }
 
@@ -128,7 +130,6 @@ NSInteger maxQuestionPosition = 0;
         self.categories = @[[[GuesstimateCategory alloc] initWithId:self.categoryId withTitle:@"Alcohol" withBgImage:@"cat_alcohol.jpg" isLocked:NO]];
         categoryPosition = 0;
     }
-
 }
 
 #pragma mark push
@@ -138,10 +139,12 @@ NSInteger maxQuestionPosition = 0;
     if(app.hasDelayedPush == YES) {
         self.pushHandler = [[GuesstimatePushHandler alloc] init];
         self.pushHandler.authUser = [GuesstimateUser getAuthUser];
-        [self.pushHandler handlePush:app.pushData];
+        self.alertDelegate = [app.pushView createDelegate];
+        [app.pushView setAlertTypeDelegate:self.alertDelegate];
+        [self.pushHandler handlePushView:app.pushView];
         
         app.hasDelayedPush = NO;
-        app.pushData = nil;
+        app.pushView = nil;
     }
 }
 

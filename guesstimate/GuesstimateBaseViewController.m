@@ -12,6 +12,8 @@
 #import "MMDrawerController.h"
 #import "MMDrawerVisualState.h"
 #import "UIViewController+MMDrawerController.h"
+#import "GuesstimateInvitesViewController.h"
+#import "GuesstimateInvite.h"
 
 @interface GuesstimateBaseViewController ()
 
@@ -23,7 +25,7 @@
 
 @implementation GuesstimateBaseViewController
 
-static NSInteger offset = 70;
+static NSInteger offset = 35;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -59,7 +61,7 @@ static NSInteger offset = 70;
 {
     [super viewDidLoad];
     
-    offset = 70;
+    offset = 35;
     
     UIGraphicsBeginImageContext(self.view.frame.size);
     [[UIImage imageNamed:@"test_bg.png"] drawInRect:self.view.bounds];
@@ -89,11 +91,13 @@ static NSInteger offset = 70;
 
 -(void)addMenuItems {
     // Menu items
-    UIView *leftContainerView = [[UIView alloc] initWithFrame:CGRectMake(10, 27, 25, 25)];
+    UIView *leftContainerView = [[UIView alloc] initWithFrame:CGRectMake(2, 19, 41, 41)];
     UIButton *contactsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    contactsButton.frame = CGRectMake(0, 0, 25, 25);
+    contactsButton.frame = CGRectMake(0, 0, 41, 41);
+
     UIImage *btnContacts = [UIImage imageNamed:@"ic_friends.png"];
     UIImageView *btnContactsView = [[UIImageView alloc] initWithImage:btnContacts];
+    btnContactsView.frame = CGRectMake(8, 8, 25, 25);
     [contactsButton addSubview:btnContactsView];
     [leftContainerView addSubview:contactsButton];
     
@@ -104,19 +108,53 @@ static NSInteger offset = 70;
     UITapGestureRecognizer *tapForContacts = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openLeftDrawer)];
     [contactsButton addGestureRecognizer:tapForContacts];
     
-    UIView *rightContainerView = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 35, 27, 25, 25)];
+    UIView *rightContainerView = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 43, 19, 41, 41)];
     UIButton *alertsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    alertsButton.frame = CGRectMake(0, 0, 25, 25);
+    alertsButton.frame = CGRectMake(0, 0, 41, 41);
+    
     UIImage *btnImgDone = [UIImage imageNamed:@"ic_alerts.png"];
     UIImageView *btnImageView = [[UIImageView alloc] initWithImage:btnImgDone];
+    btnImageView.frame = CGRectMake(8, 8, 25, 25);
+    
     [alertsButton addSubview:btnImageView];
     [rightContainerView addSubview:alertsButton];
+    
+    UIView *notifBadge = [[UIView alloc] initWithFrame:CGRectMake(rightContainerView.frame.size.width - 20, 3, 14, 14)];
+    notifBadge.layer.cornerRadius = 7.0f;
+    notifBadge.backgroundColor = [UIColor redColor];
+    UILabel *notifCount = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 14, 14)];
+    notifCount.textAlignment = NSTextAlignmentCenter;
+    notifCount.textColor = [UIColor whiteColor];
+    notifCount.font = [UIFont fontWithName:@"HelveticaNeue" size:9.0f];
+    notifCount.text = @"";
+    notifCount.tag = 35001;
+    notifBadge.tag = 35000;
+    notifBadge.hidden = YES;
+    [notifBadge addSubview:notifCount];
+    [rightContainerView addSubview:notifBadge];
+    
+    
     [self.view addSubview:rightContainerView];
     [self.view bringSubviewToFront:rightContainerView];
     
     // Right Drawer
     UITapGestureRecognizer *tapForAlerts = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openRightDrawer)];
     [alertsButton addGestureRecognizer:tapForAlerts];
+}
+
+
+- (void) updateAlertBadgeCount {
+    [GuesstimateInvite getMyInvitesCount:^(NSInteger count, NSError *error) {
+        if(!error && count > 0) {
+            UILabel *notifBadgeText = (UILabel *)[self.view viewWithTag:35001];
+            notifBadgeText.text = [NSString stringWithFormat:@"%ld", (long)count];
+            [self.view viewWithTag:35000].hidden = NO;
+        } else {
+            UILabel *notifBadgeText = (UILabel *)[self.view viewWithTag:35001];
+            notifBadgeText.text = @"";
+            [self.view viewWithTag:35000].hidden = YES;
+        }
+    }];
 }
 
 -(void)addMenuItemsStackedRight:(UIView *)view {
@@ -176,10 +214,9 @@ static NSInteger offset = 70;
 }
 
 -(void)setBackButton {
-    UIButton *backButton = [[UIButton alloc] initWithFrame: CGRectMake(-20.0f, 0, 60.0f, 30.0f)];
-    [backButton setTitle:@"Menu" forState:UIControlStateNormal];
-    [backButton addTarget:self action:@selector(backToCategories) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
+
+    
+    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Menu" style:UIBarButtonItemStylePlain target:self action:@selector(backToCategories)];
     self.navigationItem.leftBarButtonItem = backButtonItem;
 }
 
@@ -206,7 +243,9 @@ static NSInteger offset = 70;
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
 }
 -(void)openRightDrawer {
-    [self.mm_drawerController toggleDrawerSide:MMDrawerSideRight animated:YES completion:nil];
+    GuesstimateInvitesViewController *vc = [[GuesstimateInvitesViewController alloc] init];
+    [self pushSelectionViewController:vc];
+    //[self.mm_drawerController toggleDrawerSide:MMDrawerSideRight animated:YES completion:nil];
 }
 
 #pragma mark textfield-shift

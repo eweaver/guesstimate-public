@@ -33,20 +33,25 @@
 }
 
 +(void)initWithGameObject:(GuesstimateGame *)gameObject inviterObject:(GuesstimateUser *)inviterObject onCompleteBlock:(void (^)(GuesstimateInvite *invite, NSError *error))onComplete {
-    __block GuesstimateInvite *invite = [[GuesstimateInvite alloc] init];
-    invite.game = gameObject;
-    invite.user = inviterObject;
-    
     PFQuery *query = [PFQuery queryWithClassName:@"Invite"];
     PFObject *game = [PFObject objectWithClassName:@"Game"];
     game.objectId = gameObject.objectId;
     
     [query whereKey:@"gameId" equalTo:game];
     [query findObjectsInBackgroundWithBlock:^(NSArray *inviteObjects, NSError *error) {
-        if(!error && inviteObjects.count == 1) {
-            PFObject *inviteObject = inviteObjects[0];
-            invite.objectId = inviteObject.objectId;
-            onComplete(invite, nil);
+        GuesstimateInvite *invite = [[GuesstimateInvite alloc] init];
+        invite.game = gameObject;
+        invite.user = inviterObject;
+        if(!error) {
+            GuesstimateUser *authUser = [GuesstimateUser getAuthUser];
+            
+            for(PFObject *inviteObject in inviteObjects) {
+                if([[inviteObject objectForKey:@"inviteId"] isEqualToString:authUser.objectId]) {
+                    invite.objectId = inviteObject.objectId;
+                    onComplete(invite, nil);
+                    return;
+                }
+            }
         } else {
             onComplete(nil, error);
         }
@@ -104,6 +109,7 @@
         PFQuery *query = [PFQuery queryWithClassName:@"Invite"];
         [query whereKey:@"inviteId" equalTo:user.objectId];
         [query includeKey:@"gameId"];
+        [query includeKey:@"gameId.categoryId"];
         [query includeKey:@"inviter"];
 
         [query findObjectsInBackgroundWithBlock:^(NSArray *inviteObjects, NSError *error) {
@@ -117,6 +123,27 @@
             onComplete(invites, error);
         }];
     }
+}
+
++(void)getMyInvitesCount:(void (^)(NSInteger count, NSError *error))onComplete {
+    GuesstimateUser *user = [GuesstimateUser getAuthUser];
+    
+    if(!user) {
+        NSDictionary *errorDictionary = @{ @"error": @"No session user to load invites for."};
+        NSError* error = [[NSError alloc] initWithDomain:@"com.firststep.guesstimate.UserError" code:1 userInfo:errorDictionary];
+        onComplete(0, error);
+    } else {
+        PFQuery *query = [PFQuery queryWithClassName:@"Invite"];
+        [query whereKey:@"inviteId" equalTo:user.objectId];
+        [query includeKey:@"gameId"];
+        [query includeKey:@"gameId.categoryId"];
+        [query includeKey:@"inviter"];
+        
+        [query findObjectsInBackgroundWithBlock:^(NSArray *inviteObjects, NSError *error) {
+            onComplete([inviteObjects count], error);
+        }];
+    }
+
 }
 
 -(void)acceptInvite:(void (^)(BOOL succeeded, NSError *error))onComplete {
@@ -157,8 +184,7 @@
                     NSDate *date = [NSDate date];
                     NSDate *expiresAt = [date dateByAddingTimeInterval:60*60*1];
                     NSArray *users = [self.game getOtherGamePlayers];
-                    NSLog(@"%@", users);
-                    [GuesstimatePushNotifications sendPushToUsers:users type:@"newPlayer" message:@"A player has joined the game!" pushData:pushData expiresAt:expiresAt];
+                    [GuesstimatePushNotifications sendPushToUsers:users type:@"newPlayer" message:[NSString stringWithFormat:@"%@ has joined the game!", user.name] pushData:pushData expiresAt:expiresAt];
                 }];
             }
             onComplete(succeeded, error);

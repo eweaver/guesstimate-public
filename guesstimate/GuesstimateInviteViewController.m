@@ -8,7 +8,7 @@
 
 #import "GuesstimateInviteViewController.h"
 #import "GuesstimatePlayGameViewController.h"
-#import "GuesstimateInviteTableViewCell.h"
+#import "GuesstimateGameInviteTableViewCell.h"
 #import "GuesstimateGame.h"
 #import "GuesstimateContact.h"
 
@@ -122,10 +122,10 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    GuesstimateInviteTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"InviteCell"];
+    GuesstimateGameInviteTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"GameInviteCell"];
     
     if(cell == nil) {
-        cell = [[GuesstimateInviteTableViewCell alloc] init];
+        cell = [[GuesstimateGameInviteTableViewCell alloc] init];
     }
 
     [cell setBackgroundColor:[UIColor clearColor]];

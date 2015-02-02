@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GuesstimateMPCHandler.h"
 
 @interface FSPSAppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -15,6 +16,7 @@
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+@property (strong, nonatomic) GuesstimateMPCHandler *mpcHandler;
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;

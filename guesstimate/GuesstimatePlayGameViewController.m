@@ -11,6 +11,7 @@
 #import "GuesstimateEndGameViewController.h"
 #import "GuesstimateGame.h"
 #import "GuesstimatePlayerEntryTableViewCell.h"
+#import "FSPSAppDelegate.h"
 
 @interface GuesstimatePlayGameViewController ()
 
@@ -19,6 +20,7 @@
 @property (strong, nonatomic) NSMutableArray *players;
 @property (assign, nonatomic) NSInteger authUserCellIndex;
 @property (assign, nonatomic) BOOL gameIsComplete;
+@property (strong, nonatomic) FSPSAppDelegate *appDelegate;
 
 @end
 
@@ -230,6 +232,10 @@
                 [GuesstimateApplication hideWaiting:self.view];
                 
                 if(initialLoad == YES) {
+                    //GuesstimateUser *authUser = [GuesstimateUser getAuthUser];
+                    self.appDelegate = (FSPSAppDelegate *) [[UIApplication sharedApplication] delegate];
+                    [self.appDelegate.mpcHandler advertiseSelf:[NSString stringWithFormat:@"gt-%@", self.game.objectId] advertise:YES];
+                    
                     [self.view addSubview:self.playersTable];
                 } else {
                     [self.playersTable reloadData];

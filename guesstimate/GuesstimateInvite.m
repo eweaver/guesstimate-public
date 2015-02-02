@@ -95,6 +95,7 @@
     NSDictionary *pushData = @{@"gameId":gameId, @"creator":user.objectId};
     NSDate *date = [NSDate date];
     NSDate *expiresAt = [date dateByAddingTimeInterval:60*60*1];
+
     [GuesstimatePushNotifications sendPushToUsers:users type:@"invite" message:@"You have been invited to a game!" pushData:pushData expiresAt:expiresAt];
 }
 

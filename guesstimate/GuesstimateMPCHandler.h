@@ -7,7 +7,17 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <MultipeerConnectivity/MultipeerConnectivity.h>
+#import "GuesstimateAlertDataSource.h"
 
-@interface GuesstimateMPCHandler : NSObject
+@interface GuesstimateMPCHandler : NSObject <MCSessionDelegate, GuesstimateAlertDataSource>
+
+@property (strong, nonatomic) MCSession *session;
+@property (strong, nonatomic) MCBrowserViewController *browser;
+
+- (void) setupPeerWithDisplayName:(NSString *)displayName;
+- (void) setupSession;
+- (void) setupBrowser:(NSString *)serviceType;
+- (void) advertiseSelf:(NSString *)alert advertise:(BOOL)advertise;
 
 @end

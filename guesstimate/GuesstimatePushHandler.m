@@ -58,8 +58,20 @@
             app.pushView = [[GuesstimateAlertView alloc] initWithType:@"invite" dataSource:pushDataSource];
         } else {
             if(! [self.authUser.objectId isEqualToString:[userInfo objectForKey:@"creator"]]) {
-                self.alertView = [[GuesstimateAlertView alloc] initWithType:@"invite" dataSource:self];
-                [self.alertView showInvite];
+                //self.alertView = [[GuesstimateAlertView alloc] initWithType:@"invite" dataSource:self];
+                //[self.alertView showInvite];
+                
+                FSPSAppDelegate *delegate = (FSPSAppDelegate *) [[UIApplication sharedApplication] delegate];
+
+                if(delegate.mpcHandler.session != nil) {
+                    [delegate.mpcHandler setupBrowser:[userInfo objectForKey:@"gameId"]];
+                    
+                    MMDrawerController *drawerController = (MMDrawerController *) delegate.window.rootViewController;
+                    UINavigationController *navController = (UINavigationController *) drawerController.centerViewController;
+                    [navController pushViewController:delegate.mpcHandler.browser animated:YES];
+
+                }
+                
             }
         }
     }
@@ -182,7 +194,6 @@
         }
         
     }
-
 }
 
 #pragma mark GuesstimateAlertDataSource

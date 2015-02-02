@@ -97,6 +97,11 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))handler {
     self.pushHandler.authUser = [GuesstimateUser getAuthUser];
     [self.pushHandler handlePush:notificationPayload];
     
+    GuesstimateUser *authUser = [GuesstimateUser getAuthUser];
+    self.mpcHandler = [[GuesstimateMPCHandler alloc] init];
+    [self.mpcHandler setupPeerWithDisplayName:authUser.name];
+    [self.mpcHandler setupSession];
+    
     // Create a pointer to the Photo object
     /*NSString *photoId = [notificationPayload objectForKey:@"p"];
     PFObject *targetPhoto = [PFObject objectWithoutDataWithClassName:@"Photo"
